@@ -1,0 +1,4757 @@
+openapi: 3.0.1
+info:
+  title: TAPCLICKS
+  description: |-
+  
+    This is the 2.6.20 version of the API Specification for TapClicks.
+
+    # AUTHENTICATION
+    The **TapClicks** API uses the OAuth 2.0 protocol for authentication and authorization (<a href="https://tools.ietf.org/html/rfc6749#section-4.4">Client Credentials Grant</a>).<br>
+    All requests must be authenticated and must include a valid access token.
+
+  version: '2.6.20'
+  termsOfService: 'https://www.tapclicks.com/terms-of-use/'
+  contact:
+    # name: 
+    url: https://www.tapclicks.com/
+    # email: 
+  x-logo:
+    # url: 'https://jobs.mindtheproduct.com/wp-content/uploads/company_logos/2018/04/tapclicks_logo_png-250x93.png'
+    url: 'https://www.tapclicks.com/static-templates/img/tapclicks-logo-color.png'
+    backgroundColor: "#283237"
+
+  
+servers:
+  - url: 'https://api.tapclicks.com/v2'
+  
+tags:
+  - name: POSSIBLE RESPONSES
+    description: |
+        **Possible Response Codes:**
+        ```
+        > 200 - OK: The request was successful and the response body contains 
+                    the representation requested
+        > 302 - FOUND: A common redirect response; you can GET the representation 
+                    at the URL in the Location response header
+        > 304 - NOT MODIFIED: Your client's cached version of the representation 
+                    is still up to date
+        > 400 - BAD REQUEST: The request could not be understood by the server 
+                    due to malformed syntax                    
+        > 401 - UNAUTHORIZED: The supplied credentials, if any, are not sufficient 
+                    to access the resource
+        > 404 - NOT FOUND: The server has not found anything matching the 
+                    Request-URI
+        > 429 - TOO MANY REQUESTS: Your application is sending too many 
+                    simultaneous requests
+        > 500 - SERVER ERROR: We couldn't return the representation due to 
+                    an internal server error
+        > 503 - SERVICE UNAVAILABLE: We are temporarily unable to return 
+                    the representation. Please wait for a bit and try again.
+        
+        ```
+        
+  - name: PAGINATION
+    description: | 
+      Pagination can be implemented with the query parameter `page`, which accepts two parameters.<br>
+      The first parameter represents which page is returned (starting from index = 0).<br>
+      The second parameter represents how many records each page contains and, therefore, the number of records that will be returned.
+      
+      **Examples&#58;**
+      
+      |URL                                                | Records returned|
+      |---------------------------------------------------|-----------------|
+      |https://api.tapclicks.com/v2/34/data/cgn?page=0,5  | returns the 5 records of page index 0 (records 1 -> 5) |
+      |https://api.tapclicks.com/v2/34/data/cgn?page=1,5  | returns the 5 records of page index 1 (records 6 -> 10) |
+      |https://api.tapclicks.com/v2/34/data/cgn?page=1,8  | returns the 8 records of page index 1 (records 9 -> 16) |
+      |https://api.tapclicks.com/v2/34/data/cgn?page=2,6  | returns the 6 records of page index 2 (records 13 -> 18) |
+
+
+
+  - name: VERSIONING
+    description: |
+      |TapClicks API version | Date               | Link to the API documentation   | Changes
+      |----------------------|--------------------|---------------------------------|-------------
+      | 2.5.23.1             | 20th April 2017    | link here                       | Description or link to external documentation 
+      | 2.5.31.1             | 9th January 2018   | link here                       | Description or link to external documentation 
+      | 2.6.20 (current)     | 22nd February 2019 | link here (current page)        | Description or link to external documentation 
+
+
+      
+        
+  - name: TAPCLICKS API
+    description: Welcome to Tap API.
+  - name: BUSINESS UNITS
+    description: Business Units are much like Client Groups except that a Business Units is managed by a Business Units Admin who has access similar to that of a Super Admin. These are often used if a company has multiple locations under which clients exist (e.g. franchises). As a Business Unit Admin you can manage a single Business Unit or a Group of Business Units.
+  - name: CHANNELS
+    description: A way to bring in metrics from multiple data sources and show the performance of your campaign across these data sources.
+  - name: CLIENTS
+    description: Clients in the instance.
+  - name: CLIENT'S CATEGORIES
+    description: Refers to the categories that can be assigned to a Client (example&#58; Services, Automotive, Retailer, Restaurant...).
+  - name: CLIENT GROUPS
+    description: Client Groups allow you to group Clients together. This way you can grant an agent access to all of their reports. These groups can be used with Clients who have multiple locations that require individual reporting, but also require one person to have complete data access. You can also create Groups of ClientGroups if the need is there.
+  - name: DATA PROFILES
+    description: Data Profiles help you control the types of campaigns, data and metric you want each User to have access to.
+  - name: DATA TYPES
+    description: All data types available for any field.
+  - name: DATE RANGE
+    description: Date ranges allow you to focus on the data set you are concerned about or want to run a report for.
+  - name: LANGUAGES
+    description: Supported languages.
+  - name: LEADS
+    description: Only if the Leads Management module is active.
+  - name: ROLES
+    description: Roles are used to control the access of Agents and Business Unit Admins. If the TapOrders module is active, IOTool roles can be assigned to “Super Admin”, “Agent” and “Business Unit Admin” type of user as well.
+  - name: SERVICES (DATA SOURCES)
+    description: Services are the Data Sources that a client can connect to pull data into TapClicks; these also include all the resources that are created with the Smart Connector.
+  - name: USERS
+    description: Users in the instance.
+  - name: EXAMPLES
+    description: |
+      | Replace the the {id} in the URL with a service_id from the list of all <a href="#tag/SERVICES-(DATA-SOURCES)/paths/~1services{~1service_id}/get">Services (Data Sources)</a> |  
+      | --------------------------------------------------------------------------------------|   
+      | **1. Get API version**                                                                | 
+      | https://api.tapclicks.com/v2/                                                         | 
+      | **2. Get metadata for the service**                                                   |
+      | https://api.tapclicks.com/v2/services/{id}/data/cgn?metadata=1                        | 
+      | **3. Get services level data**                                                        | 
+      | https://api.tapclicks.com/v2/services/{id}                                            | 
+      | **4. Get campaign level data**                                                        | 
+      | https://api.tapclicks.com/v2/services/{id}/data/cgn                                   | 
+      | **5. Get campaign level data paginated**                                              | 
+      | https://api.tapclicks.com/v2/services/{id}/data/cgn?page=0,10                         | 
+      | **6. Get campaign level data paginated and grouped yearly**                           | 
+      | https://api.tapclicks.com/v2/services/{id}/data/cgn?page=0,10&timegrouping=yearly     | 
+      | **7. Get certain metrics only**                                                       | 
+      | https://api.tapclicks.com/v2/services/{id}/data/cgn?page=0,10&groupby=customer_id&fields=customer_id,CTR,AverageCPC,ClickCount&sort=customer_id                                 | 
+      
+      
+  
+paths:
+  /:
+    get:
+      tags:
+        - TAPCLICKS API
+      summary: Welcome Message
+      description: This call will simply return a "Welcome to TAP API" message
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    description: Data
+                  error:
+                    type: boolean
+                    description: Error
+                  warning:
+                    type: array
+                    description: Warnings
+                    items:
+                      type: string
+                  status:
+                    type: integer
+                    description: Status
+                example:
+                  data: "Welcome to TAP API"
+                  error: false
+                  warning: []
+                  status: 200
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'
+        '404':
+          description: API Route not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+# --------------------- Business Units --------------------------
+
+  /clusters{/cluster_id}:
+    get:
+      tags:
+        - BUSINESS UNITS
+      summary: Business Units
+      description: Clusters are Business Units. This returns a specific Business Unit (*cluster_id*).
+      
+      
+        **Note&#58;** if the path parameter *cluster_id* is omitted, this will return all the Business Units in the instance (in the response, the *data* field will be an array of cluster objects).
+      parameters:
+        - in: path
+          name: /cluster_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the Business Unit to get. If omitted, it will return all Business Units.
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/clusters/22?metadata=1
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: string
+          description: The example will return the first five records. Please refer to <a href="#tag/PAGINATION">Pagination</a> for more examples.
+        
+        
+            This will limit the number of rows in the fetch result. 
+          example: https://api.tapclicks.com/v2/clusters?page=0,5
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+          description: This will filter the result data with the specific fields.
+      
+      
+            **Note&#58;** when using this query parameter, other than the ones specified, more fields may be returned as well.
+          example: https://api.tapclicks.com/v2/clusters?fields=id,name
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by name.
+          example: https://api.tapclicks.com/v2/clusters?sort=name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: http://api.tapclicks.com/v2/clusters?count=1
+        - in: query
+          name: field_data_filter
+          required: false
+          schema:
+            type: string
+          description: |
+            This will filter the data that contains only specific values.
+      
+      
+            To remove items use **!** before the value.
+            
+            
+            Example&#58; `"https://api.tapclicks.com/v2/clusters?id=!12"`<br>
+            This will return all clusters, except for the one with id = 12
+          example: https://api.tapclicks.com/v2/clusters?id=10,11,12
+
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_clusters'
+              example:
+                data:
+                  id: "1"
+                  name: "West Coast Unit"
+                  has_light_logo: false
+                  has_dark_logo: false
+                  external_cluster_id: ""
+                  enable_inventory_calendar: true
+                  is_cluster_group: false
+                  status: "active"
+                  type: "group"
+                  member_cluster_ids: ["2","4","6"]
+                  status_display: "Active"
+                error: false
+                warnings: []
+                status: 200
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'    
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+    post:
+      tags:
+        - BUSINESS UNITS
+      summary: Edit an existing Business Unit
+      description: Clusters are Business Units. This edits an existing Business Unit.
+      parameters:
+        - in: path
+          name: /cluster_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the Business Unit to edit.     
+      requestBody:
+        content:
+          'multipart/form-data, boundary=----WebKitFormBoundarySMGbXJtM7VSNs0Nu':
+            schema:
+              $ref: "#/components/schemas/createCluster"
+            examples:
+              '0':
+                value: |-
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu
+                  Content-Disposition: form-data; name="model"
+                  {
+                    "type": "group",
+                    "name": "East Coast Unit",
+                    "member_cluster_ids": "6,23"
+                  }
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu--         
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_successful_post_delete'
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400' 
+              example:
+                error: true
+                data: 
+                  - Business Unit type missing
+                  - Business Unit name missing
+                warnings: []
+                status: 400
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'    
+    delete:
+      tags:
+        - BUSINESS UNITS
+      summary: Delete a Business Unit
+      description: Clusters are Business Units. This deletes a new Business Unit.
+      parameters:
+        - in: path
+          name: /cluster_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the Business Unit to delete.  
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_successful_post_delete'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+              example:
+                error: true
+                data: 
+                  -  cannot be deleted
+                warnings: []
+                status: 401              
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'          
+                
+  /clusters:
+    post:
+      tags:
+        - BUSINESS UNITS
+      summary: Create a Business Unit
+      description: Clusters are Business Units. This creates a new Business Unit.
+      requestBody:
+        content:
+          'multipart/form-data, boundary=----WebKitFormBoundarySMGbXJtM7VSNs0Nu':
+            schema:
+              $ref: "#/components/schemas/createCluster"
+            examples:
+              '0':
+                value: |-
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu
+                  Content-Disposition: form-data; name="model"
+                  {
+                    "type": "single",
+                    "name": "West Coast Unit"
+                  }
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu--  
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_successful_post_delete'
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400' 
+              example:
+                error: true
+                data: 
+                  - The Business Unit type cannot be changed
+                warnings: []
+                status: 400              
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'            
+                
+                
+# --------------------- Channels (Categories) --------------------------                
+      
+  /categories{/category_id}:
+    get:
+      tags:
+        - CHANNELS
+      summary: Channels
+      description: Categories are Channels. This returns a specific category (*category_id*).
+      
+      
+        **Note&#58;** if the path parameter *category_id* is omitted, this will return all the channels in the instance (in the response, the *data* field will be an array of category objects).
+      parameters:
+        - in: path
+          name: /category_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the Channel to get. If omitted, it will return all Channels.
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/categories?metadata=1
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+          description: This will filter the result data with the specific fields.
+      
+      
+            **Note&#58;** when using this query parameter, other than the ones specified, more fields may be returned as well.
+          example: https://api.tapclicks.com/v2/categories?fields=id,name
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by name.
+          example: https://api.tapclicks.com/v2/categories?sort=name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: http://api.tapclicks.com/v2/categories?count=1
+
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/response_200_categories'
+              example:
+                data:
+                  id: "49"
+                  name: "Custom Channel"
+                  service_ids:
+                    39: 
+                      icon: "facebookads"
+                      name: "Facebook Ads"
+                      color: "#234589"
+                      is_connected: true
+                    100002:
+                      icon: "custom-icon"
+                      name: "Manually Uploaded"
+                      color: "#234511"
+                      is_connected: true
+                error: false
+                warnings: []
+                status: 200
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+
+# --------------------- Clients --------------------------                  
+
+  /clients{/client_id}:
+    get:
+      tags:
+        - CLIENTS
+      summary: Clients
+      description: This returns a specific Client (*client_id*).
+      
+      
+        **Note&#58;** if the path parameter *client_id* is omitted, this will return all the Clients in the instance (in the response, the *data* field will be an array of client objects).
+      parameters:
+        - in: path
+          name: /client_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the Client to get. Please refer to <a href="#tag/CLIENTS">Clients</a> to obtain the correct Id
+          
+          
+            If omitted, it will return all Clients
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/clients?metadata=1
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: string
+          description: The example will return the first five records. Please refer to <a href="#tag/PAGINATION">Pagination</a> for more examples.
+        
+        
+            This will limit the number of rows in the fetch result. 
+          example: https://api.tapclicks.com/v2/clients?page=0,5
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+          description: This will filter the result data with the specific fields.
+      
+      
+            **Note&#58;** when using this query parameter, other than the ones specified, more fields may be returned as well.
+          example: https://api.tapclicks.com/v2/clients?fields=id,company_name,last_name
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by company name.
+          example: https://api.tapclicks.com/v2/clients?sort=company_name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: http://api.tapclicks.com/v2/clients?count=1
+        - in: query
+          name: field_data_filter
+          required: false
+          schema:
+            type: string
+          description: | 
+            This will filter the data that contains only specific values.
+      
+      
+            To remove items use **!** before the value.
+            
+
+            Example&#58; `"https://api.tapclicks.com/v2/clients?id=!12"`<br>
+            This will return all Clients, except for the one with id = 12
+          example: https://api.tapclicks.com/v2/clients?company_name=JL%20Marketing
+
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_clients'
+              example:
+                data:
+                  id: "1"
+                  company_name: "JP Marketing"
+                  first_name: "Jack"
+                  last_name: "Smith"
+                  email: "jsmith@JPmarketing.com"
+                  address_1: "Rue Washington 66"
+                  address_2: ""
+                  city: "Minneapolis"
+                  state: "Minnesota"
+                  zip: "54201"
+                  country: ""
+                  phone: ""
+                  fax: ""
+                  website: "jpmark.com"
+                  account_manager_user_id: null
+                  has_light_logo: false
+                  has_dark_logo: false
+                  crm_id: ""
+                  billing_id: ""
+                  additional_details_1: ""
+                  additional_details_2: ""
+                  additional_details_3: ""
+                  enable_lead_management_module: false
+                  created_by_user_id: "1"
+                  created_by_user: "jsmith@JPmarketing.com"
+                  report_language: ""
+                  source_service_id: null
+                  creation_time: 1540478543
+                  last_modification_time: 1540478543
+                  cluster_id: null
+                  default_reporting_profile_id: "1"
+                  client_category_id: null
+                  reporting_status: "active"
+                  iotool_status: "presale"
+                  has_hipaa_data: false
+                  formatted_creation_time: "Oct 25, 2018 1:15 PM"
+                  formatted_last_modification_time: "Oct 25, 2018 1:15 PM"
+                  client_group_ids: []
+                  activate_tapleads: false
+                  reporting_status_display: "active"
+                  iotool_status_display: "presale"
+                error: false
+                warnings: []
+                status: 200    
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+    post:
+      tags:
+        - CLIENTS
+      summary: Edit existing Client
+      description: This modifies the information of an existing Client.
+      
+        
+        Note that the payload of this POST is the same as <a href="#tag/CLIENTS/paths/~1clients/post">Create a new Client</a>.
+      parameters:
+        - in: path
+          name: /client_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the Client to get. Please refer to <a href="#tag/CLIENTS">Clients</a> to obtain the correct Id
+      requestBody:
+        content:
+          'multipart/form-data, boundary=----WebKitFormBoundarySMGbXJtM7VSNs0Nu':
+            schema:
+              $ref: "#/components/schemas/createClient"
+            examples:
+              '0':
+                value: |-
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu
+                  Content-Disposition: form-data; name="model"
+
+                  {
+                  "company_name": "JP Marketing",
+                  "default_reporting_profile_id": "1",
+                  "reporting_status": "pending_mapping",
+                  "iotool_status": "presale"
+                  }
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu--
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_successful_post_delete'
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'
+              example:
+                error: true
+                data: 
+                  - Company name missing
+                  - Default data profile missing
+                  - Reporting Status missing or invalid
+                  - TapOrders status missing or invalid
+                warnings: []
+                status: 400 
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+  /clients:
+    post:
+      tags:
+        - CLIENTS
+      summary: Create a new Client
+      description: This creates a new Client.
+      
+      
+        Note that the payload of this POST is the same as <a href="#tag/CLIENTS/paths/~1clients{~1client_id}/post">Edit existing Client</a>.
+      requestBody:
+        content:
+          'multipart/form-data, boundary=----WebKitFormBoundarySMGbXJtM7VSNs0Nu':
+            schema:
+              $ref: "#/components/schemas/createClient"
+            examples:
+              '0':
+                value: |-
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu
+                  Content-Disposition: form-data; name="model"
+
+                  {
+                  "company_name": "JP Marketing",
+                  "default_reporting_profile_id": "1",
+                  "reporting_status": "pending_mapping",
+                  "iotool_status": "presale"
+                  }
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu--
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_successful_post_delete'
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'
+              example:
+                error: true
+                data: 
+                  - That company name is already in use by another Client
+                warnings: []
+                status: 400 
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'   
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+             
+# --------------------- Client's Categories --------------------------  
+  
+  /clientcategories:
+    get:
+      tags:
+        - CLIENT'S CATEGORIES
+      summary: All Client's categories
+      description: This returns a list of all possible categories that can be assigned to a client.
+      
+      
+        For example&#58; Services, Automotive, Retailer, Restaurant...
+      parameters:
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/clientcategories?metadata=1
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by name.
+          example: https://api.tapclicks.com/v2/clientcategories?sort=name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: http://api.tapclicks.com/v2/clientcategories?count=1
+        - in: query
+          name: field_data_filter
+          required: false
+          schema:
+            type: string
+          description: | 
+            This will filter the data that contains only specific values.
+      
+      
+            To remove items use **!** before the value.
+            
+          
+            Example&#58; `"https://api.tapclicks.com/v2/clientcategories?id=!12"`<br>
+            This will return all Client categories, except for the one with id = 12
+          example: https://api.tapclicks.com/v2/clientcategories?name=Automotive       
+       
+      responses: 
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_clientcategories'
+              example:
+                data:
+                  - id: "1"
+                    name: "General"
+                  - id: "2"
+                    name: "Wholesale"
+                  - id: "3"
+                    name: "Retailer"
+                  - id: "4"
+                    name: "Restaurants"
+                  - id: "5"
+                    name: "Auto Dealerships"
+                  - id: "6"
+                    name: "Arts & Entertainment"
+                  - id: "7"
+                    name: "Automotive"
+                  - id: "8"
+                    name: "Beauty & Fitness" 
+                  - id: "9"
+                    name: "Community, Clubs & Organizations"
+                  - id: "10"
+                    name: "Computers & Electronics"
+                  - id: "11"
+                    name: "Education"
+                  - id: "12"
+                    name: "Food & Dining"
+                  - id: "13"
+                    name: "Health Care"
+                  - id: "14"
+                    name: "Home & Garden"
+                  - id: "15"
+                    name: "Real Estate & Rentals"
+                  - id: "16"
+                    name: "Recreation & Sporting Goods"
+                  - id: "17"
+                    name: "Travel & Accomodations"
+                  - id: "18"
+                    name: "Services"
+                  - id: "20"
+                    name: "Home Applicances"
+                  - id: "21"
+                    name: "Agricultural"
+                error: false
+                warnings: []
+                status: 200   
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'   
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+
+# --------------------- Client Groups --------------------------        
+                  
+  /clientgroups{/clientgroup_id}:
+    get:
+      tags:
+        - CLIENT GROUPS
+      summary: Client Groups
+      description: This returns a specific Group of Clients (*clientgroup_id*).
+      
+      
+        **Note&#58;** if the path parameter *clientgroup_id* is omitted, this will return all the Groups of Clients in the instance (in the response, the *data* field will be an array of clientGroup objects).
+      parameters:
+        - in: path
+          name: /clientgroup_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the Group of Client to get. If omitted, it will return all Groups of Clients
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/clientgroups/1?metadata=1
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: string
+          description: The example will return the first five records. Please refer to <a href="#tag/PAGINATION">Pagination</a> for more examples.
+        
+        
+            This will limit the number of rows in the fetch result. 
+          example: https://api.tapclicks.com/v2/clientgroups?page=0,5
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+          description: This will filter the result data with the specific fields.
+      
+      
+            **Note&#58;** when using this query parameter, other than the ones specified, more fields may be returned as well.
+          example: https://api.tapclicks.com/v2/clientgroups?fields=id,name
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by name.
+          example: https://api.tapclicks.com/v2/clientgroups?sort=name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: http://api.tapclicks.com/v2/clientgroups?count=1
+        - in: query
+          name: field_data_filter
+          required: false
+          schema:
+            type: string
+          description: |
+            This will filter the data that contains only specific values.
+      
+      
+            To remove items use **!** before the value.
+           
+            
+            Example&#58; `"https://api.tapclicks.com/v2/clientgroups?id=!12"`<br>
+            This will return all Client Groups, except for the one with id = 12
+          example: https://api.tapclicks.com/v2/clientgroups?id=10,15,16
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_clientgroups'
+              example:
+                data:
+                  id: "1"
+                  name: "Test Unit"
+                  cluster_id: null
+                  group_type: "group_of_clients"
+                  has_light_logo: false
+                  has_dark_logo: false
+                  created_at: 1540404023
+                  updated_at: 1540404023
+                  report_language: "en_US"
+                  formatted_created_at: "Oct 24, 2018 6:00 PM"
+                  formatted_updated_at: "Oct 24, 2018 6:00 PM"
+                  client_ids: ["1","3"]
+                error: false
+                warnings: []
+                status: 200
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+    post:
+      tags:
+        - CLIENT GROUPS
+      summary: Edit an existing Client Group
+      description: This edits an existing Client Group
+      parameters:
+        - in: path
+          name: /clientgroup_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the Group of Client to edit.
+      requestBody:
+        content:
+          'multipart/form-data, boundary=----WebKitFormBoundarySMGbXJtM7VSNs0Nu':
+            schema: 
+              $ref: "#/components/schemas/createClientGroup"
+            examples:
+              '0':
+                value: |-
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu
+                  Content-Disposition: form-data; name="model"
+                  {
+                    "name":"Boston",
+                    "group_type":"group_of_clients",
+                    "cluster_id":"1",
+                    "client_ids":"1,2,34"
+                  }
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu--         
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_successful_post_delete'
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400' 
+              example:
+                error: true
+                data: 
+                  - Client Group type missing
+                  - Client Group name missing
+                warnings: []
+                status: 400
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'       
+                
+    delete:
+      tags:
+        - CLIENT GROUPS
+      summary: Delete a Client Group
+      description: This deletes a Client Group
+      parameters:
+        - in: path
+          name: /clientgroup_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the Group of Client to delete.
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_successful_post_delete'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+              example:
+                error: true
+                data: 
+                  -  cannot be deleted
+                warnings: []
+                status: 401                 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404' 
+          
+  /clientgroups:
+    post:
+      tags:
+        - CLIENT GROUPS
+      summary: Create a Client Group
+      description: This creates a new Client Group
+      requestBody:
+        content:
+          'multipart/form-data, boundary=----WebKitFormBoundarySMGbXJtM7VSNs0Nu':
+            schema:
+              $ref: "#/components/schemas/createClientGroup"
+            examples:
+              '0':
+                value: |-
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu
+                  Content-Disposition: form-data; name="model"
+                  {
+                    "name":"Boston",
+                    "group_type":"group_of_client_groups",
+                    "cluster_id":"1",
+                    "client_group_ids":"77,81,10"
+                  }
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu--  
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_successful_post_delete'
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400' 
+              example:
+                error: true
+                data: 
+                  - That Client Group name is already in use.
+                warnings: []
+                status: 400
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'        
+        
+# --------------------- Data Profiles -------------------------- 
+
+  /reportingprofiles{/profile_id}:
+    get:
+      tags:
+        - DATA PROFILES
+      summary: Data Profiles
+      description: Reporting Profiles are Data Profiles. This returns a specific Data Profile (*profile_id*).
+      
+      
+        **Note&#58;** if the path parameter *profile_id* is omitted, this will return all the Data Profiles in the instance (in the response, the *data* field will be an array of dataProfile objects).
+      parameters:
+        - in: path
+          name: /profile_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the Data Profile to get. If omitted, it will return all Data Profiles  
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/reportingprofiles?metadata=1
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: string
+          description: The example will return the first five records. Please refer to <a href="#tag/PAGINATION">Pagination</a> for more examples.
+        
+        
+            This will limit the number of rows in the fetch result. 
+          example: https://api.tapclicks.com/v2/reportingprofiles?page=0,5
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+          description: This will filter the result data with the specific fields.
+      
+      
+            **Note&#58;** when using this query parameter, other than the ones specified, more fields may be returned as well.
+          example: https://api.tapclicks.com/v2/reportingprofiles?fields=id,name
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by name.
+          example: https://api.tapclicks.com/v2/reportingprofiles?sort=name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: http://api.tapclicks.com/v2/reportingprofiles?count=1
+        - in: query
+          name: field_data_filter
+          required: false
+          schema:
+            type: string
+          description: |
+            This will filter the data that contains only specific values.
+      
+      
+            To remove items use **!** before the value.
+          
+            
+            Example&#58; `"https://api.tapclicks.com/v2/reportingprofiles?id=!12"`<br>
+            This will return all data profiles, except for the one with id = 12
+          example: https://api.tapclicks.com/v2/reportingprofiles?name=Default%20Profile,Internal-Employee
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/response_200_dataprofiles'
+              example:
+                data:
+                  id: "1"
+                  name: "Default Profile"
+                  created_at: 1378100067
+                  updated_at: 1435939300
+                  enable_new_services_by_default: true
+                  enable_scores: false
+                  adwords_split_active: false
+                  hide_adwords_network: false
+                  cluster_id: null
+                error: false
+                warnings: []
+                status: 200
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+# --------------------- Data Types --------------------------                 
+  
+  /columns/datatypes:
+    get:
+      tags:
+        - DATA TYPES
+      summary: All data types
+      description: This returns all the data types that are available for any field.
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_datatypes'
+              example:
+                data:
+                  - key: "integer"
+                    value: "Number"
+                    icon: "#"
+                    is_selectable: true
+                    is_numeric: true
+                    precision: 0
+                  - key: "decimal"
+                    value: "Decimal"
+                    icon: ".00"
+                    is_selectable: true
+                    is_numeric: true
+                    precision: 2
+                  - key: "percent"
+                    value: "Percent"
+                    icon: "%"
+                    is_selectable: true
+                    is_numeric: true
+                    precision: 2
+                  - key: "currency"
+                    value: "Currency"
+                    icon: "$"
+                    is_selectable: true
+                    is_numeric: true
+                    precision: 2
+                  - key: "string"
+                    value: "Text"
+                    icon: "T"
+                    is_selectable: true
+                    is_numeric: false
+                    precision: 0
+                  - key: "phonenumber"
+                    value: "Phone Number"
+                    icon: "icon-phone"
+                    is_selectable: true
+                    is_numeric: false
+                    precision: 0
+                  - key: "callback"
+                    value: "Text"
+                    icon: "T"
+                    is_selectable: false
+                    is_numeric: false
+                    precision: 0
+                  - key: "date"
+                    value: "Date"
+                    icon: "icon-calendar"
+                    is_selectable: true
+                    is_numeric: false
+                    precision: 0
+                  - key: "time"
+                    value: "Time"
+                    icon: "icon-clock-o"
+                    is_selectable: true
+                    is_numeric: true
+                    precision: 0
+                  - key: "link"
+                    value: "Link"
+                    icon: "icon-link"
+                    is_selectable: true
+                    is_numeric: false
+                    precision: 0
+                  - key: "url"
+                    value: "URL"
+                    icon: "icon-link"
+                    is_selectable: true
+                    is_numeric: false
+                    precision: 0
+                  - key: "image"
+                    value: "Image"
+                    icon: "icon-image"
+                    is_selectable: true
+                    is_numeric: false
+                    precision: 0
+                  - key: "datetime"
+                    value: "Date"
+                    icon: "icon-calendar"
+                    is_selectable: false
+                    is_numeric: false
+                    precision: 0
+                  - key: "id"
+                    value: "Id"
+                    icon: "ID"
+                    is_selectable: false
+                    is_numeric: false
+                    precision: 0
+                  - key: "bool"
+                    value: "Boolean"
+                    icon: "icon-check"
+                    is_selectable: false
+                    is_numeric: false
+                    precision: 0
+                error: false
+                warnings: []
+                status: 200
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'  
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+# --------------------- Date Range --------------------------                  
+  /daterange:
+    get:
+      tags:
+        - DATE RANGE
+      summary: Date range
+      description: This returns the current set date range.
+      responses: 
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_daterange'
+              example:
+                data:
+                  start: 1541894432
+                  end: 1541894431
+                  relative_date_range: null
+                  comparison_start: 1541894432
+                  comparison_end: 1541894431
+                  comparison_active: null
+                  comparison_period: null
+                error: false
+                warnings: []
+                status: 200
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+# --------------------- Languages --------------------------                 
+  /languages:
+    get:
+      tags:
+        - LANGUAGES
+      summary: All supported languages
+      description: This returns a list of all supported languages.
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/response_200_languages'
+              example:
+                data: 
+                  - locale: "en_US"
+                    name: "English"
+                  - locale: "fr_CA"
+                    name: "French"
+                  - locale: "hi_IN"
+                    name: "Hindi"
+                  - locale: "id_ID"
+                    name: "Indonesian"
+                  - locale: "es_ES"
+                    name: "Spanish"
+                error: false
+                warnings: []
+                status: 200
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+# --------------------- Leads --------------------------    
+  /leads{/lead_id}:
+    get:
+      tags:
+        - LEADS
+      summary: Leads
+      description: This returns a specific lead (*lead_id*). 
+        
+        
+        **Note&#58;** if the path parameter *lead_id* is omitted, this will return a list of all the leads in the instance (in the response, the *data* field will be an array of lead objects).
+      parameters:
+        - in: path
+          name: /lead_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the lead to get. If omitted, it will return all leads 
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/leads/13?metadata=1
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: string
+          description: The example will return the first five records. Please refer to <a href="#tag/PAGINATION">Pagination</a> for more examples.
+        
+        
+            This will limit the number of rows in the fetch result. 
+          example: https://api.tapclicks.com/v2/leads?page=0,5
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+          description: This will filter the result data with the specific fields.
+      
+      
+            **Note&#58;** when using this query parameter, other than the ones specified, more fields may be returned as well.
+          example: https://api.tapclicks.com/v2/leads?fields=id,client_id,campaign_id
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by name.
+          example: https://api.tapclicks.com/v2/leads?sort=service_name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: http://api.tapclicks.com/v2/leads?count=1
+        - in: query
+          name: field_data_filter
+          required: false
+          schema:
+            type: string
+          description: |
+            This will filter the data that contains only specific values.
+      
+      
+            To remove items use **!** before the value.
+            
+            
+            Example&#58; `"https://api.tapclicks.com/v2/leads?id=!12"`<br>
+            This will return all leads, except for the one with id = 12
+          example: https://api.tapclicks.com/v2/leads?id=10,11,12
+        - in: query
+          name: groupby
+          required: false
+          schema:
+            type: string
+          description: The results will be grouped based on the provided field
+          example: https://api.tapclicks.com/v2/leads?groupby=client_id
+        - in: query
+          name: timegrouping
+          required: false
+          schema:
+            type: string
+          description: The results will be grouped and narrowed within the specified timegroup
+          example: https://api.tapclicks.com/v2/leads?timegrouping=yearly
+        - in: query
+          name: aggregate
+          required: false
+          schema:
+            type: boolean
+          description: The results will be the aggregated value of each field
+          example: https://api.tapclicks.com/v2/leads?id=27&aggregate=true
+        - in: query
+          name: row_grouping_count
+          required: false
+          schema:
+            type: string
+          description: Passing **row_grouping_count** along with the list of **fields** will provide grouped result and row count on each group (**groupby**)
+            
+          example: https://api.tapclicks.com/v2/leads?groupby=campaign_id&fields=row_grouping_count
+        - in: query
+          name: nested
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: Fetch grouped data that nested based on the groupby expression
+          example: https://api.tapclicks.com/v2/leads?groupby=campaign_name&nested=1
+        - in: query
+          name: daterange
+          required: false
+          schema:
+            type: string
+          description: The example will return the leads with a timestamp for the month of December.
+            
+            
+            This filters the result between the given date range (YYYY-MM-DD).
+          example: https://api.tapclicks.com/v2/leads?&daterange=2018-12-01|2018-12-31
+        
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_leads'
+              example:
+                data:
+                  id: null
+                  lead_id: "329312"
+                  client_id: 409
+                  campaign_id: "51"
+                  campaign_name: "Destination Carins Marketing"
+                  customer_number: "5555550229"
+                  customer_email: null
+                  call_status: null
+                  tracking_source: "611555782855"
+                  caller_name: null
+                  comments: null
+                  call_was_recorded: "<audio preload='none' controls><source src='portal.avanser.com/audio/555/65570421/in/rec.6900-2018-08-29-1033-115.wav' type='audio/wav'></audio>"
+                  duration: null
+                  timestamp: 1545608100
+                  third_party_id: "50114777"
+                  note_count: null
+                  is_overriden: false
+                  type: "call"
+                  service_lead_id: "91555"
+                  service_id: "69"
+                  service_name: "Call Tracking"
+                  end_customer_id: null
+                  visibility: "Visible"
+                  quality: null
+                  status: null
+                  first_name: null
+                  last_name: null
+                  address_1: null
+                  address_2: null
+                  city: null
+                  state: "NSW"
+                  zip: null
+                  deal_amount: null
+                  source_name: null
+                  source_type: null
+                  client_name: "Destination Mark"
+                  client_reporting_status: "active"
+                  client_billing_id: ""
+                  client_additional_details_1: ""
+                  client_additional_details_2: ""
+                  client_additional_details_3: ""
+                  client_crm_id: ""
+                  customer_name: null
+                  client_name_value: null
+                  client_name_value_id: null
+                  client_name_tag: "No Tag"
+                  client_name_color: null
+                  client_name_tag_id: null
+                  customer_number_value: null
+                  customer_number_value_id: null
+                  customer_number_tag: "No Tag"
+                  customer_number_color: null
+                  customer_number_tag_id: null
+                  customer_email_value: null
+                  customer_email_value_id: null
+                  customer_email_tag: "No Tag"
+                  customer_email_color: null
+                  customer_email_tag_id: null
+                  tracking_source_value: null
+                  tracking_source_value_id: null
+                  tracking_source_tag: "No Tag"
+                  tracking_source_color: null
+                  tracking_source_tag_id: null
+                  row_grouping_count: "1"
+                  formatted_customer_number: "555-555-0229"
+                  formatted_timestamp: "Jan 11, 2017 12:00 AM"
+                  has_history: false
+                  visibility_display: "Visible"
+                  tags: [ ]
+                error: false
+                warnings: []
+                status: 200
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'  
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_403"
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+# --------------------- Role --------------------------  
+  /roles{/role_id}:
+    get:
+      tags:
+        - ROLES
+      summary: User roles
+      description: This returns a specific role (*role_id*) that can be assigned to a user.
+      
+      
+        **Note&#58;** if the path parameter *role_id* is omitted, this will return a list of all the roles in the instance (in the response, the *data* field will be an array of role objects).
+      parameters:
+        - in: path
+          name: /role_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the role to get. If omitted, it will return all roles  
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/roles?metadata=1
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: string
+          description: The example will return the first five records. Please refer to <a href="#tag/PAGINATION">Pagination</a> for more examples.
+        
+        
+            This will limit the number of rows in the fetch result. 
+          example: https://api.tapclicks.com/v2/roles?page=0,5
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+          description: This will filter the result data with the specific fields.
+      
+      
+            **Note&#58;** when using this query parameter, other than the ones specified, more fields may be returned as well.
+          example: https://api.tapclicks.com/v2/roles?fields=id,name
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by name.
+          example: https://api.tapclicks.com/v2/roles?sort=name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: http://api.tapclicks.com/v2/roles?count=1
+        - in: query
+          name: field_data_filter
+          required: false
+          schema:
+            type: string
+          description: |
+            This will filter the data that contains only specific values.
+      
+      
+            To remove items use **!** before the value.
+            
+            
+            Example&#58; `"https://api.tapclicks.com/v2/roles?id=!12"`<br>
+            This will return all roles, except for the one with id = 12
+          example: https://api.tapclicks.com/v2/roles?name=Sales,Vendor
+        
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/response_200_roles'
+              example:
+                data:
+                  id: "2"
+                  name: "Sales"
+                  role_type: "io_tool"
+                  cluster_id: null
+                  reporting_template_ids: ["1"]
+                  manage_dashboard: false
+                  can_manage_alerts: false
+                error: false
+                warnings: []
+                status: 200
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+
+      
+# --------------------- Services (Data Sources) --------------------------        
+
+  /services{/service_id}:
+    get:
+      tags:
+        - SERVICES (DATA SOURCES)
+      summary: Services
+      description: 
+        This returns a specific service (*service_id*) in the instance. This can be helpful to find out if such is connected or not.
+        
+        
+        **Note&#58;** if the path parameter *service_id* is omitted, this will return a list of all the services available in the instance, whether they're connected or not (in the response, the *data* field will be an array of service objects).
+      parameters:
+        - in: path
+          name: /service_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the service to get. If omitted, it will return all services 
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/services/108?metadata=1
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: string
+          description: The example will return the first five records. Please refer to <a href="#tag/PAGINATION">Pagination</a> for more examples.
+        
+        
+            This will limit the number of rows in the fetch result. 
+          example: https://api.tapclicks.com/v2/services?page=0,5
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+          description: This will filter the result data with the specific fields.
+      
+      
+            **Note&#58;** when using this query parameter, other than the ones specified, more fields may be returned as well.
+          example: https://api.tapclicks.com/v2/services?fields=id,name
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by name.
+          example: https://api.tapclicks.com/v2/services?sort=name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: http://api.tapclicks.com/v2/services?count=1
+        - in: query
+          name: field_data_filter
+          required: false
+          schema:
+            type: string
+          description: |
+            This will filter the data that contains only specific values.
+      
+      
+            To remove items use **!** before the value.
+            
+            
+            Example&#58; `"https://api.tapclicks.com/v2/services?id=!12"`<br>
+            This will return all services, except for the one with id = 12
+          example: https://api.tapclicks.com/v2/services?id=10,11,12
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/response_200_services'
+              example:
+                data:
+                  service_id: "44"
+                  name: "Facebook Insights"
+                  original_name: "Facebook Insights"
+                  datamodel: "info/shoutletfbcgn"
+                  parsemodel: "fetcher/vendor_facebook_insights_parser"
+                  api: "1"
+                  use_id: "0"
+                  use_oauth: "1"
+                  label: ""
+                  model: "facebook"
+                  avg: "0"
+                  trend: "0"
+                  sort_order: "0"
+                  active: true
+                  active_in_development: true
+                  active_in_production: true
+                  has_margin: false
+                  color: "#4183c4"
+                  custom_color: null
+                  custom_icon: null
+                  child_of_service_id: null
+                  preferred: "0"
+                  is_connected: true
+                  service_icon: "facebook"
+                error: false
+                warnings: []
+                status: 200   
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                  
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+  /services{/id}/data{/data_view_id}: #{/field}
+    get:
+      tags:
+        - SERVICES (DATA SOURCES)
+      summary: Data for a service
+      description: This returns the data for a specific service. This API call should utilize as many query parameters as needed to obtain the specific data available for a certain data view.
+      
+      
+        Please refer to the <a href="#tag/EXAMPLES">Examples</a> section for more specific use cases. 
+      
+        
+        **Note&#58;** the fields listed in the response example may differ depending on the service (data-source) the user is trying to pull the data from.   
+      parameters:
+        - in: path
+          name: /id
+          schema:
+            type: integer
+          required: true
+          description: Id of the service to get
+        - in: path
+          name: /data_view_id
+          schema:
+            type: string
+          required: true
+          description: Data view id that the column belongs to
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/services/34/data/cgn?metadata=1
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: string
+          description: The example will return the first five records. Please refer to <a href="#tag/PAGINATION">Pagination</a> for more examples.
+        
+        
+            This will limit the number of rows in the fetch result. 
+          example: https://api.tapclicks.com/v2/services/34/data/cgn?timegrouping=weekly&fields=log_date,ClickCount,ImpressionCount&page=0,5
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+          description: This will filter the result data with the specific fields.
+      
+      
+            **Note&#58;** when using this query parameter, other than the ones specified, more fields may be returned as well.
+          example: https://api.tapclicks.com/v2/services/34/data/cgn?timegrouping=weekly&fields=ClickCount,ImpressionCount
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by Customer name.
+          example: https://api.tapclicks.com/v2/services/34/data/cgn?groupby=cust_id&fields=ClickCount,ImpressionCount&sort=cust_name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: https://api.tapclicks.com/v2/services/34/data/cgn?groupby=cust_id&fields=ClickCount,ImpressionCount&sort=cust_name&count=1
+        - in: query
+          name: field_data_filter
+          required: false
+          schema:
+            type: string
+          description: |
+            This will filter the data that contains only specific values.
+      
+      
+            To remove items use **!** before the value.
+            
+            
+            Example&#58; `"http://api.tapclicks.com/v2/services/34/data/cgn?fields=client_name,ClickCount,ImpressionCount&&customer_id=!921"`<br>
+            This will return the selected fields from all Customers, except for the customer id = 921
+          example: http://api.tapclicks.com/v2/services/34/data/cgn?fields=client_name,ClickCount,ImpressionCount&&customer_id=12,13
+        - in: query
+          name: groupby
+          required: false
+          schema:
+            type: string
+          description: The results will be grouped based on the provided field
+          example: http://api.tapclicks.com/v2/services/34/data/cgn?groupby=customer_id&fields=client_name,ClickCount,ImpressionCount
+        - in: query
+          name: timegrouping
+          required: false
+          schema:
+            type: string
+          description: The results will be grouped and narrowed within the specified timegroup
+          example: https://api.tapclicks.com/v2/services/34/data/cgn?groupby=log_date&timegrouping=weekly&fields=log_date,ClickCount,Impression
+        - in: query
+          name: aggregate
+          required: false
+          schema:
+            type: boolean
+          description: The results will be the aggregated value of each field
+          example: https://api.tapclicks.com/v2/services/34/data/cgn?timegrouping=weekly&fields=log_date,ClickCount,Impressions&aggregate=true
+        - in: query
+          name: row_grouping_count
+          required: false
+          schema:
+            type: string
+          description: Passing **row_grouping_count** along with the list of **fields** will provide grouped result and row count on each group (**groupby**)
+          example: https://services/34/data/cgn?groupby=customer_id&fields=ClickCount,ImpressionCount,row_grouping_count
+        - in: query
+          name: nested
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: Fetch grouped data that nested based on the groupby expression
+          example: https://api.tapclicks.com/v2/services/34/data/cgn?groupby=customer_id&fields=ClickCount,ImpressionCount,Client_costCount&sort=-log_date&nested=1
+        - in: query
+          name: daterange
+          required: false
+          schema:
+            type: string
+          description: The example will return clicks and impressions with a timestamp for the month of December.
+            
+            
+            This filters the result between the given date range (YYYY-MM-DD).
+          example: https://api.tapclicks.com/v2/services/34/data/cgn?groupby=customer_id&fields=ClickCount,ImpressionCount&daterange=2018-12-01|2018-12-31
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/response_200_servicesdataview'
+              example:
+                data:
+                  - customer_id: "234"
+                    campaign_id: "1"
+                    campaign_name: "Intro to Email Tool"
+                    subtype: null
+                    subject: "Read My Blog"
+                    type: "BATCH_EMAIL"
+                    ViewEvents: "<span class='button-group'><a href='#/service/details/172/event/1' clasS='button-second'>View Event</a></span>"
+                    client_name: "HubS Email Campaign - September 30 2017"
+                    _client_city: ""
+                    _client_state: ""
+                    _client_zip_code: ""
+                    client_reporting_status: "active"
+                    client_billing_id: ""
+                    client_additional_details_1: ""
+                    client_additional_details_2: ""
+                    client_additional_details_3: ""
+                    client_crm_id: ""
+                    _client_cluster_name: null
+                    _client_account_manager: null
+                    _client_category: null
+                  - customer_id: "234"
+                    campaign_id: "2"
+                    campaign_name: "Test Notification"
+                    subtype: null
+                    subject: "It's ok to say I don't know"
+                    type: "AUTOMATED_EMAIL"
+                    ViewEvents: "<span class='button-group'><a href='#/service/details/173/event/7' clasS='button-second'>View Event</a></span>"
+                    client_name: "HubS Email Campaign - August 15 2017"
+                    _client_city: ""
+                    _client_state: ""
+                    _client_zip_code: ""
+                    client_reporting_status: "active"
+                    client_billing_id: ""
+                    client_additional_details_1: ""
+                    client_additional_details_2: ""
+                    client_additional_details_3: ""
+                    client_crm_id: ""
+                    _client_cluster_name: null
+                    _client_account_manager: null
+                    _client_category: null
+                error: false
+                warnings: []
+                status: 200
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'              
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+     
+# --------------------- Users --------------------------  
+  /users{/user_id}:
+    get:
+      tags:
+        - USERS
+      summary: Users
+      description: This returns a specific User (*user_id*).
+      
+      
+        **Note&#58;** if the path parameter *user_id* is omitted, this will return all the Users in the instance (in the response, the *data* field will be an array of user objects).
+      parameters:
+        - in: path
+          name: /user_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the user to get. If omitted, it will return all Users
+        - in: query
+          name: metadata
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide more or all the info for the available fields.
+          example: https://api.tapclicks.com/v2/users/1?metadata=1
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: string
+          description: The example will return the first five records. Please refer to <a href="#tag/PAGINATION">Pagination</a> for more examples.
+        
+        
+            This will limit the number of rows in the fetch result. 
+          example: https://api.tapclicks.com/v2/users?page=0,5
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+          description: This will filter the result data with the specific fields.
+      
+      
+            **Note&#58;** when using this query parameter, other than the ones specified, more fields may be returned as well.
+          example: https://api.tapclicks.com/v2/users?fields=id,user_type,last_name,email
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Ascending by default; prefix **-** for descending.
+      
+      
+            This will alphabetically sort the results by last name.
+          example: https://api.tapclicks.com/v2/users?sort=last_name
+        - in: query
+          name: count
+          required: false
+          schema:
+            type: integer
+            enum: [0,1]
+          description: The API will provide a total number of records in the result.
+          example: http://api.tapclicks.com/v2/users?count=1
+        - in: query
+          name: field_data_filter
+          required: false
+          schema:
+            type: string
+          description: |
+            This will filter the data that contains only specific values.
+      
+      
+            To remove items use **!** before the value.
+          
+            
+            Example&#58; `"https://api.tapclicks.com/v2/users?id=!12"`<br>
+            This will return all Users, except for the one with id = 12
+          example: https://api.tapclicks.com/v2/users?id=1,2,3          
+
+      responses:
+        '200':
+          description: Ok Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_users'
+              example:
+                data:
+                  id: "1"
+                  client_id: null
+                  user_type: "superadmin"
+                  company_name: null
+                  first_name: "Jack"
+                  last_name: "Smith"
+                  address_1: ""
+                  address_2: ""
+                  city: ""
+                  state: ""
+                  zip: ""
+                  phone: ""
+                  email: "jsmith@jpmarketing.com"
+                  cluster_id: null
+                  external_user_id: ""
+                  additional_details_1: ""
+                  additional_details_2: ""
+                  additional_details_3: ""
+                  enable_io_tool_module: true
+                  enable_lead_management_module: false
+                  has_light_logo: false
+                  has_dark_logo: false
+                  override_dashboard_pages_from_reporting_profile: false
+                  default_home_page: null
+                  io_tool_notification_frequency: null
+                  country: ""
+                  timezone: "default"
+                  status: "active"
+                  hipaa_acknowledgement_timestamp: null
+                  creation_time: 1540403488
+                  show_services_overview: "default"
+                  show_categories_overview: "default"
+                  role_id: null
+                  io_tool_role_id: "6"
+                  client_group_id: null
+                  reporting_profile_id: "8"
+                  user_type_display: "Super Admin"
+                  country_display: ""
+                  timezone_display: "default"
+                  status_display: "active"
+                  formatted_creation_time: "Sept 24, 2018 2:14 PM"
+                error: false
+                warnings: []
+                status: 200 
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+
+    post:
+      tags:
+        - USERS
+      summary: Edit an existing user
+      description: This modifies the information of an existing User.
+      
+      
+        Note that the payload of this POST is the same as <a href="#tag/USERS/paths/~1users/post">Create a new user</a>.
+      parameters:
+        - in: path
+          name: /user_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric Id of the user that needs to be edited
+      requestBody:
+        content:
+          'multipart/form-data, boundary=----WebKitFormBoundarySMGbXJtM7VSNs0Nu':
+            schema:
+              $ref: "#/components/schemas/editUser"
+            examples:
+              '0':
+                value: |-
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu
+                  Content-Disposition: form-data; name="model"
+
+                  {
+                  "user_type": "agent",
+                  "email": "user@email.com",
+                  "password": "user1234",
+                  "first_name": "John",
+                  "last_name": "Doe",
+                  "reporting_profile_id": "1",
+                  "client_group_id": "1",
+                  "role_id": "1",
+                  "status": "active"
+                  }
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu--
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_successful_post_delete'
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'  
+              example:
+                error: true
+                data: 
+                  - User type missing
+                warnings: []
+                status: 400
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'                 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+              
+  /users:
+    post:
+      tags:
+        - USERS
+      summary: Create a new user
+      description: This creates a new User.
+      
+      
+        Note that the payload of this POST is the same as <a href="#tag/USERS/paths/~1users{~1user_id}/post">Edit an existing user</a>.
+      requestBody:
+        content:
+          'multipart/form-data, boundary=----WebKitFormBoundarySMGbXJtM7VSNs0Nu':
+            schema:
+              $ref: "#/components/schemas/createUser"
+            examples:
+              '0':
+                value: |-
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu
+                  Content-Disposition: form-data; name="model"
+
+                  {
+                  "user_type": "agent",
+                  "email": "user@email.com",
+                  "password": "user1234",
+                  "first_name": "John",
+                  "last_name": "Doe",
+                  "reporting_profile_id": "1",
+                  "client_group_id": "1",
+                  "role_id": "1",
+                  "status": "active"
+                  }
+                  ------WebKitFormBoundarySMGbXJtM7VSNs0Nu--
+      responses:
+        '200':
+          description: Ok - Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response_200_successful_post_delete'
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400' 
+              example:
+                error: true
+                data: 
+                  - That email is already in use
+                warnings: []
+                status: 400                
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401' 
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+                
+  /users/values/set:
+    get:
+      tags: 
+        - USERS
+      summary: User Types / User Timezones
+      description: |
+        **Note&#58;** This endpoint must be used with the query parameter "fields".<br>
+        
+        
+        This will return all available user types <br>
+        *fields*=**user_type -**  `(https://api.tapclicks.com/v2/users/values/set?fields=user_type)`
+        
+        
+        This will return all available user timezones <br>
+        *fields*=**timezone -**  `(https://api.tapclicks.com/v2/users/values/set?fields=timezone)`
+        
+      parameters:
+        - in: path
+          name: fields
+          required: true
+          schema:
+            type: string
+            enum: [timezone,user_type]
+          description: This is required for the endpoint to return valid data  
+      responses:
+        '200':
+          description: Ok Successful Operation
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/userTypes'  
+                  - $ref: '#/components/schemas/timezones' 
+        '400':
+          description: Error on client's side
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_400'                
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_401'
+        '404':
+          description: API Route not found 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_404'
+
+# ---------------- QUERY PARAMETERS ------------------------
+components:
+
+
+  schemas:
+# --------------- Business Unit Model -----------------     
+    cluster:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Business Unit Id
+        name:
+          type: string
+          description: Business Unit Name
+        has_light_logo:
+          type: boolean
+          description: Has light logo
+        has_dark_logo:
+          type: boolean
+          description: Has dark logo
+        external_cluster_id:
+          type: string
+          description: External Business Unit Id
+        enable_inventory_calendar:
+          type: boolean
+          description: Enable inventory calendar 
+          
+          
+            **Note&#58;** This field is returned only if the TapOrders module is active
+        is_cluster_group:
+          type: boolean
+          description: Is it a Business Unit Group
+        status:
+          type: string
+          enum: [active,inactive]
+          description: Status
+        type:
+          type: string
+          description: Type
+          enum: [single,group]
+        member_cluster_ids:
+          type: string
+          description: Member Business Unit Ids - Please refer to <a href="#tag/BUSINESS-UNITS">Business Units</a> to obtain all existing Business Unit Ids
+          
+          
+            **Note&#58;** This field is returned only if *type* = `group`
+        status_display:
+          type: string
+          enum: [Active,Inactive]
+          description: Status display
+          
+# --------------- Create Business Unit Model -----------------  
+    createCluster:
+      type: object
+      required: 
+        - name
+      properties:
+        name:
+          type: string
+          description: Business Unit Name
+          
+          
+            **Note&#58;** The Business Unit's name must be a unique entry
+        type:
+          type: string
+          description: Type - When this is `group` please refer to the field *member_cluster_ids*.
+            
+            
+            **Note&#58;** Once this field is set, it cannot be edited to a different type.
+          enum: [single,group]
+        external_cluster_id:
+          type: string
+          description: External Business Unit Id
+        member_cluster_ids:
+          type: array
+          description: Member Business Unit Ids
+          
+          
+            **Note&#58;** This field is ONLY to be entered (and <font color="red">**required**</font>) when *type* = `group`
+          items:
+            type: integer
+        enable_inventory_calendar:
+          type: integer
+          description: Enable inventory calendar 
+          
+          
+            **Note&#58;** This field is enabled only if the TapOrders module is active
+          enum: [0,1]
+        enable_in_out_status_board:
+          type: integer
+          description: Enable In/Out status board
+          enum: [0,1]
+        status:
+          type: string
+          enum: [active,inactive]
+          description: Status
+            
+# --------------- Channel Model ----------------- 
+    category:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Channel Id
+        name:
+          type: string
+          description: Channel Name
+        services_ids:
+          type: object
+          description: Service Ids in the Channel
+          properties:
+            service_id:
+              type: object
+              description: Service Id - Please refer to <a href="#tag/SERVICES-(DATA-SOURCES)/paths/~1services{~1service_id}/get">Services (Data Sources)</a> to obtain all existing Service Ids
+              properties:
+                icon:
+                  type: string
+                  description: Service icon
+                name:
+                  type: string
+                  description: Service Name
+                color:
+                  type: string
+                  description: Service color
+                is_connected:
+                  type: boolean
+                  description: Is connected
+        color:
+          type: string
+          description: Channel color
+        custom_icon:
+          type: string
+          description: Channel custom icon
+        is_predefined:
+          type: boolean
+          description: Is predefined
+        category_key:
+          type: string
+          description: Channel key
+        unique_id:
+          type: string
+          description: Channel unique Id
+        is_connected:
+          type: boolean
+          description: Is connected
+      
+      
+
+# --------------- Creates New Client Model  ------------------ 
+    createClient:
+      type: object
+      required:
+      - company_name
+      - reporting_status
+      - iotool_status
+      - default_reporting_profile_id
+      properties:
+        company_name:
+          type: string
+          description: Company Name
+          
+          
+            **Note&#58;** The Company Name must be a unique entry
+        first_name:
+          type: string
+          description: First Name
+        last_name:
+          type: string
+          description: Last Name
+        email:
+          type: string
+          description: Email Address
+        address_1:
+          type: string
+          description: Address 1
+        address_2:
+          type: string
+          description: Address 2
+        city:
+          type: string
+          description: City
+        state:
+          type: string
+          description: State
+        zip:
+          type: string
+          description: Zip/Postal Code
+        country:
+          type: string
+          description: Country
+        phone:
+          type: string
+          description: Phone number
+        fax:
+          type: string
+          description: Fax number
+        website:
+          type: string
+          description: Website
+        account_manager_user_id:
+          type: string
+          description: Account Manager User Id - Please refer to <a href="#tag/USERS">User Id</a> to obtain all existing User Ids
+        crm_id:
+          type: string
+          description: CRM Id
+        billing_id:
+          type: string
+          description: Billing Id
+        additional_details_1:
+          type: string
+          description: Additional details 1
+        additional_details_2:
+          type: string
+          description: Additional details 2
+        additional_details_3:
+          type: string
+          description: Additional details 3
+        enable_lead_management_module:
+          type: boolean
+          default: false
+          description: Enable Lead Management Module
+        report_language:
+          type: string
+          description: Report language - Please refer to <a href="#tag/LANGUAGES">Languages</a> to obtain a list of all supported languages
+          
+          
+            **Note&#58;** This field is available only if the Multi-language Reports Module is active
+          enum: ["en_US","fr_CA","hi_IN","id_ID","es_ES"]  
+        source_service_id:
+          type: string
+          description: Source service Id
+        cluster_id:
+          type: string
+          description: Business Unit Id - Please refer to <a href="#tag/BUSINESS-UNITS">Business Units</a> to obtain all existing Business Unit Ids
+        default_reporting_profile_id:
+          type: string
+          description: Default Data Profile Id - Please refer to <a href="#tag/DATA-PROFILES">Data Profiles</a> to obtain all existing Data Profile Ids
+        client_category_id:
+          type: string
+          description: Client Category Id - Please refer to <a href="#tag/CLIENT'S-CATEGORIES">Client's Categories</a> to obtain all existing Client Category Ids
+        reporting_status:
+          type: string
+          enum: [pending_mapping,active,hold,terminated]
+          description: Reporting status
+        iotool_status:
+          type: string
+          enum: [presale,active,inactive,terminated]
+          description: TapOrders status
+        has_hipaa_data:
+          type: boolean
+          description: Has HIPAA data
+        client_group_ids:
+          type: array
+          description: Client Group Ids - Please refer to <a href="#tag/CLIENT-GROUPS">Client Group</a> to obtain all existing Client Group Ids
+          items: 
+            type: string
+        activate_tapleads:
+          type: boolean
+          description: Activate TapLeads
+          
+# --------------- Client Model (GET) ----------------- 
+    client:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Client Id
+        company_name:
+          type: string
+          description: Company Name
+        first_name:
+          type: string
+          description: First Name
+        last_name:
+          type: string
+          description: Last Name
+        email:
+          type: string
+          description: Email Address
+        address_1:
+          type: string
+          description: Address 1
+        address_2:
+          type: string
+          description: Address 2
+        city:
+          type: string
+          description: City
+        state:
+          type: string
+          description: State
+        zip:
+          type: string
+          description: Zip/Postal Code
+        country:
+          type: string
+          description: Country
+        phone:
+          type: string
+          description: Phone number
+        fax:
+          type: string
+          description: Fax number
+        website:
+          type: string
+          description: Website
+        account_manager_user_id:
+          type: string
+          description: Account Manager User Id - Please refer to <a href="#tag/USERS">User Id</a> to obtain all existing User Ids
+        has_light_logo:
+          type: boolean
+          description: Has light logo
+          default: false
+        has_dark_logo":
+          type: boolean
+          default: false
+          description: Has dark logo
+        crm_id:
+          type: string
+          description: CRM Id
+        billing_id:
+          type: string
+          description: Billing Id
+        additional_details_1:
+          type: string
+          description: Additional details 1
+        additional_details_2:
+          type: string
+          description: Additional details 2
+        additional_details_3:
+          type: string
+          description: Additional details 3
+        enable_lead_management_module:
+          type: boolean
+          default: false
+          description: Enable Lead Management Module
+        created_by_user_id:
+          type: string
+          description: Created by User Id - Please refer to <a href="#tag/USERS">User Id</a> to obtain all existing User Ids
+        created_by_user:
+          type: string
+          description: Created by User - Please refer to <a href="#tag/USERS">User Id</a> to obtain all existing Users
+        report_language:
+          type: string
+          description: Report language - Please refer to <a href="#tag/LANGUAGES">Languages</a> to obtain a list of all supported languages
+          
+          
+            **Note&#58;** This field is returned only if the Multi-language Reports Module is active
+          enum: ["en_US","fr_CA","hi_IN","id_ID","es_ES"]   
+        source_service_id:
+          type: string
+          description: Source service Id
+        creation_time:
+          type: integer
+          description: Creation time
+        last_modification_time:
+          type: integer
+          description: Time of last modification
+        cluster_id:
+          type: string
+          description: Business Unit Id - Please refer to <a href="#tag/BUSINESS-UNITS">Business Units</a> to obtain all existing Business Unit Ids
+        default_reporting_profile_id:
+          type: string
+          description: Default Data Profile Id - Please refer to <a href="#tag/DATA-PROFILES">Data Profiles</a> to obtain all existing Data Profile Ids
+        client_category_id:
+          type: string
+          description: Client Category Id - Please refer to <a href="#tag/CLIENT'S-CATEGORIES">Client's Categories</a> to obtain all existing Client Category Ids
+        reporting_status:
+          type: string
+          enum: [pending_mapping,active,hold,terminated]
+          description: Reporting status
+        iotool_status:
+          type: string
+          enum: [presale,active,inactive,terminated]
+          description: TapOrders status
+        has_hipaa_data:
+          type: boolean
+          description: Has HIPAA data
+        formatted_creation_time:
+          type: string
+          description: Formatted creation time
+        formatted_last_modification_time:
+          type: string
+          description: Formatted last modification time
+        client_group_ids:
+          type: array
+          description: Client Group Ids - Please refer to <a href="#tag/CLIENT-GROUPS">Client Group</a> to obtain all existing Client Group Ids
+          items: 
+            type: string
+        activate_tapleads:
+          type: boolean
+          description: Activate TapLeads
+        reporting_status_display:
+          type: string
+          enum: [pending_mapping,active,hold,terminated]
+          description:  Reporting status display
+        iotool_status_display:
+          type: string
+          enum: [pending_mapping,active,hold,terminated]
+          description: TapOrders status display
+          
+    
+# --------------- Client Category Model -----------------     
+    clientCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Client Category Id
+        name:
+          type: string
+          description: Client Category Name
+      
+# --------------- Client Group Model -----------------         
+    clientGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Client Group Id
+        name:
+          type: string
+          description: Client Group Name
+        cluster_id:
+          type: string
+          description: Business Unit Id - Please refer to <a href="#tag/BUSINESS-UNITS">Business Units</a> to obtain all existing Business Unit Ids
+        group_type:
+          type: string
+          enum: [group_of_clients,group_of_client_groups]
+          description: Type
+        has_light_logo:
+          type: boolean
+          description: Has light logo
+        has_dark_logo:
+          type: boolean
+          description: Has dark logo
+        created_at:
+          type: integer
+          description: Creation time
+        updated at:
+          type: integer
+          description: Updated time
+        report_language:
+          type: string
+          description: Report Language - Please refer to <a href="#tag/LANGUAGES">Languages</a> to obtain a list of all supported languages
+          
+          
+            **Note&#58;** This field is returned only if the Multi-language Reports Module is active
+          enum: ["en_US","fr_CA","hi_IN","id_ID","es_ES"]
+        formatted_created_at: 
+          type: string
+          description: Formatted creation time
+        formatted_updated_at:
+          type: string
+          description: Formatted updated time
+        client_ids:
+          type: array
+          description: Client Ids - Please refer to <a href="#tag/CLIENTS">Clients</a> to obtain all existing Client Ids
+          
+          
+            **Note&#58;** This field is returned only if *group_type* is set to `group_of_clients`    
+          items: 
+            type: string
+        client_group_ids:
+          type: array
+          description: Client Group Ids - Please refer to <a href="#tag/CLIENT-GROUPS">Client Groups</a> to obtain all existing Client Group Ids
+          
+          
+            **Note&#58;** This field is returned only if *group_type* is set to `group_of_client_groups`
+          items: 
+            type: string
+  
+# --------------- Create Client Group Model -----------------   
+    createClientGroup:
+      type: object
+      required:
+        - name
+        - group_type
+      properties:
+        name:
+          type: string
+          description: Client Group Name
+          
+            
+            **Note&#58;** The Client Group name must be a unique entry
+        group_type: 
+          type: string
+          description: Group type
+          
+          
+            **Note&#58;** Once this field is set, it cannot be edited to a different type
+          enum: [group_of_clients,group_of_client_groups]
+        cluster_id:
+          type: string
+          description: Business Unit Id - Please refer to <a href="#tag/BUSINESS-UNITS">Business Units</a> to obtain all existing Business Unit Ids
+        report_language:
+          type: string
+          description: Report Language - Please refer to <a href="#tag/LANGUAGES">Languages</a> to obtain a list of all supported languages
+          
+          
+            **Note&#58;** This field is available only if the Multi-language Reports Module is active
+          enum: ["en_US","fr_CA","hi_IN","id_ID","es_ES"]          
+        client_ids:
+          type: array
+          items: 
+            type: string
+          description: Client Ids - Please refer to <a href="#tag/CLIENTS">Clients</a> to obtain all existing Client Ids.
+          
+          
+            **Note&#58;** This field is ONLY to be entered (and <font color="red">**required**</font>) when *group_type* = `group_of_clients`
+        client_group_ids:
+          type: array
+          items:
+            type: string
+          description: Client Group Ids - Please refer to <a href="#tag/CLIENT-GROUPS">Client Groups</a> to obtain all existing Client Groups Ids.
+            
+            
+            **Note&#58;** This field is ONLY to be entered (and <font color="red">**required**</font>) when *group_type* = `group_of_client_groups`
+  
+  
+# --------------- Data Profile Model -----------------          
+    dataProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Data Profile Id
+        name:
+          type: string
+          description: Data Profile Name
+        created_at:
+          type: integer
+          description: Creation time
+        updated_at:
+          type: integer
+          description: Updated time
+        enable_new_services_by_default:
+          type: boolean
+          description: Enable new services by default
+        enable_scores:
+          type: boolean
+          description: Enable scores
+        adwords_split_active:
+          type: boolean
+          description: Adwords split active
+        hide_adwords_network:
+          type: boolean
+          description: Hide adwords active
+        cluster_id:
+          type: string
+          description: Business Unit Id
+        
+# --------------- Data Type Model -----------------         
+    dataType:
+      type: object
+      properties:
+        key:
+          type: string
+          enum: [integer,decimal,percent,currency,string,phonenumber,callback,date,time,link,url,image,datetime,id,bool]
+          description: Key
+        value:
+          type: string
+          enum: [Number,Decimal,Percent,Currency,Text,Phone_Number,Date,Time,Link,URL,Image,Id,Boolean]
+          description: Value
+        icon:
+          type: string
+          description: Icon
+        is_selectable:
+          type: boolean
+          description: Is selectable
+        is_numeric:
+          type: boolean
+          description: Is numeric
+        precision:
+          type: integer  
+          description: Precision
+  
+# --------------- Date Range Model -----------------  
+    dateRange:
+      type: object
+      properties:
+        start:
+          type: integer
+          description: Start - Unix Time Stamp
+        end:
+          type: integer
+          description: End - Unix Time Stamp
+        relative_date_range:
+          type: integer
+          description: Relative date range
+        comparison_start:
+          type: integer
+          description: Comparison start - Unix Time Stamp
+        comparison_end:
+          type: integer
+          description: Comparison end - Unix Time Stamp
+        comparison_active:
+          type: integer
+          description: Comparison Active
+        comparison_period:
+          type: integer
+          description: Comparison Period
+          
+# --------------- Language Model -----------------           
+    language:
+      type: object
+      properties:
+        locale:
+          type: string
+          description: Locale
+        name:
+          type: string
+          description: Name
+          
+# --------------- Lead Model -----------------  
+    lead:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id
+        lead_id:
+          type: string
+          description: Lead Id
+        client_id:
+          type: integer
+          description: Client Id
+        campaign_id:
+          type: string
+          description: Campaign Id
+        campaign_name:
+          type: string
+          description: Campaign name
+        customer_number:
+          type: string
+          description: Customer number
+        customer_email:
+          type: string
+          description: Customer email
+        call_status:
+          type: string
+          description: Call status
+        tracking_source:
+          type: string
+          description: Tracking source
+        caller_name:
+          type: string
+          description: Caller name
+        comments:
+          type: string
+          description: Comments
+        call_was_recorded:
+          type: string
+          description: Call was recorded
+        duration:
+          type: string
+          description: Duration
+        timestamp:
+          type: integer
+          description: Timestamp - Unix Time Stamp
+        third_party_id:
+          type: string
+          description: Third party id
+        note_count:
+          type: string
+          description: Note count
+        is_overridden:
+          type: boolean
+          description: Is overridden
+        type:
+          type: string
+          description: Type
+        service_lead_id:
+          type: string
+          description: Service lead Id
+        service_id:
+          type: string
+          description: Service Id
+        service_name:
+          type: string
+          description: Service name
+        end_customer_id:
+          type: string
+          description: End Customer Id
+        visibility:
+          type: string
+          description: Visibility
+        quality:
+          type: string
+          description: Quality
+        status:
+          type: string
+          description: Status
+        first_name:
+          type: string
+          description: First name
+        last_name:
+          type: string
+          description: Last name
+        address_1:
+          type: string
+          description: Address 1
+        address_2:
+          type: string
+          description: Address 2
+        city:
+          type: string
+          description: City
+        state:
+          type: string
+          description: State
+        zip:
+          type: string
+          description: Zip/Postal code
+        deal_amount:
+          type: integer
+          description: Deal amount
+        source_name:
+          type: string
+          description: Source name
+        source_type:
+          type: string
+          description: Source type
+        client_name:
+          type: string
+          description: Client name
+        client_reporting_status:
+          type: string
+          description: Client reporting status
+        client_billing_id:
+          type: string
+          description: Client billing Id
+        client_additional_details_1:
+          type: string
+          description: Client additional details 1
+        client_additional_details_2:
+          type: string
+          description: Client additional details 2
+        client_additional_details_3:
+          type: string
+          description: Client additional details 3
+        client_crm_id:
+          type: string
+          description: client crm Id
+        customer_name:
+          type: string
+          description: Customer name
+        client_name_value:
+          type: string
+          description: Client name value
+        client_name_value_id:
+          type: string
+          description: Client name value Id
+        client_name_tag:
+          type: string
+          description: Client name tag
+        client_name_color:
+          type: string
+          description: Client name color
+        client_name_tag_id:
+          type: string
+          description: Client name tag Id
+        customer_number_value:
+          type: string
+          description: Customer number value
+        customer_number_value_id:
+          type: string
+          description: Customer number value Id
+        customer_number_tag:
+          type: string
+          description: Customer number tag
+        customer_number_color:
+          type: string
+          description: Customer number color
+        customer_number_tag_id:
+          type: string
+          description: Customer number tag Id
+        customer_email_value:
+          type: string
+          description: Customer email value
+        customer_email_value_id:
+          type: string
+          description: Customer email value Id
+        customer_email_tag:
+          type: string
+          description: Customer email tag
+        customer_email_color:
+          type: string
+          description: Customer email color
+        customer_email_tag_id:
+          type: string
+          description: Customer email tag Id
+        tracking_source_value:
+          type: string
+          description: Tracking source value
+        tracking_source_value_id:
+          type: string
+          description: Tracking source value Id
+        tracking_source_tag:
+          type: string
+          description: Tracking source tag
+        tracking_source_color:
+          type: string
+          description: Tracking source color
+        tracking_source_tag_id:
+          type: string
+          description: Tracking source tag Id
+        row_grouping_count:
+          type: string
+          description: Row grouping count
+        formatted_customer_number:
+          type: string
+          description: Formatted Customer number
+        formatted_timestamp:
+          type: string
+          description: Formatted timestamp
+        has_history:
+          type: boolean
+          description: Has history
+        visibility_display:
+          type: string
+          description: Visibility display
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags 
+          
+# --------------- Role Model -----------------            
+    role:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Role Id
+        name:
+          type: string
+          description: Role Name
+        role_type:
+          type: string
+          description: Role type
+        cluster_id:
+          type: string
+          description: Business Unit Id
+        reporting_template_ids:
+          type: array
+          items:
+            type: string
+          description: Reporting Template Ids
+        manage_dashboard:
+          type: boolean
+          description: Manage dashboard
+        can_manage_alerts:
+          type: boolean
+          description: Can manage alerts
+          
+
+            
+# --------------- Service (Data Sources) Model -----------------  
+    service:
+      type: object
+      properties:
+        service_id:
+          type: string
+          description: Service Id
+        name:
+          type: string
+          description: Service Name
+        original_name:
+          type: string
+          description: Original Name
+        datamodel:
+          type: string
+          description: Data model
+        parsemodel:
+          type: string
+          description: Parse model
+        api:
+          type: string
+          description: api
+        use_id:
+          type: string
+          description: Use Id
+        use_oauth:
+          type: string
+          description: Use oauth
+        label:
+          type: string
+          description: Label
+        model:
+          type: string
+          description: Model
+        avg:
+          type: string
+          description: Avg
+        trend:
+          type: string
+          description: Trend
+        sort_order:
+          type: string
+          description: Sort order
+        active:
+          type: boolean
+          description: Active
+        active_in_development:
+          type: boolean
+          description: Active in development
+        active_in_production:
+          type: boolean
+          description: Active in production
+        has_margin:
+          type: boolean
+          description: Has margin
+        color:
+          type: string
+          description: Color
+        custom_color:
+          type: string
+          description: Custom color
+        custom_icon:
+          type: string
+          description: Custom icon
+        child_of_service_id:
+          type: string
+          description: Child of service Id
+        preferred:
+          type: string
+          description: Preferred
+        is_connected:
+          type: boolean
+          description: Is connected
+        service_icon:
+          type: string
+          description: Service icon
+                  
+# --------------- ServiceDataView (Data Sources) Model -----------------                  
+    serviceDataView:
+      type: object
+      properties: 
+        customer_id:
+          type: string
+          description: Customer Id
+        campaign_id:
+          type: string
+          description: Campaign Id
+        campaign_name:
+          type: string
+          description: Campaign name
+        subtype:
+          type: string
+          description: Subtype
+        subject:
+          type: string
+          description: Subject
+        type: 
+          type: string
+          description: Type
+        ViewEvents:
+          type: string
+          description: View Events
+        client_name:
+          type: string
+          description: Client name
+        _client_city:
+          type: string
+          description: Client city
+        _client_state:
+          type: string
+          description: Client state
+        _client_zip_code:
+          type: string
+          description: Client zip code/postal code
+        client_reporting_status:
+          type: string
+          description: Client reporting status
+        client_billing_id:
+          type: string
+          description: Client billing Id
+        client_additional_details_1:
+          type: string
+          description: Client additional details 1
+        client_additional_details_2:
+          type: string
+          description: Client additional details 2
+        client_additional_details_3:
+          type: string
+          description: Client additional details 3
+        client_crm_id:
+          type: string
+          description: Client CRM Id
+        _client_cluster_name:
+          type: string
+          description: Client cluster name
+        _client_account_manager:
+          type: string
+          description: Client account manager
+        _client_category:
+          type: string
+          description: Client Category
+          
+# --------------- Edit an existing User Model ---------------------
+    editUser:
+      type: object
+      required: 
+        - first_name
+        - last_name
+        - user_type
+        - email
+        - status
+        - reporting_profile_id
+      properties:
+        client_id: 
+          type: string
+          description: Client Id
+          
+          
+            **Note&#58;** This field is <font color="red">**required**</font> when *user_type* = `client`
+        user_type:
+          type: string
+          enum: [client,agent,superadmin,cluster_admin]
+          description: User type - Please refer to <a href="#tag/USERS/paths/~1users~1values~1set/get">User Types</a> to obtain all available user types
+        company_name: 
+          type: string
+          description: Company Name
+        first_name:
+          type: string
+          description: First Name
+        last_name:
+          type: string
+          description: Last Name
+        address_1:
+          type: string
+          description: Address 1
+        address_2:
+          type: string
+          description: Address 2
+        city:
+          type: string
+          description: City
+        state:
+          type: string
+          description: State
+        zip:
+          type: string
+          description: Zip/Postal Code
+        phone:
+          type: string
+          description: Phone number
+        email:
+          type: string
+          description: Email address
+          
+          
+            **Note&#58;** The email address must be a unique entry
+        password:
+          type: string
+          description: Password
+        cluster_id:
+          type: string
+          description: Business Unit Id - Please refer to <a href="#tag/BUSINESS-UNITS">Business Units</a> to obtain all of the exisiting Business Unit Ids
+          
+          
+            **Note&#58;** This field is <font color="red">**required**</font> when *user_type* = `cluster_admin`
+        external_user_id:
+          type: string
+          description: External User Id
+        additional_details_1:
+          type: string
+          description: Additional Details 1
+        additional_details_2:
+          type: string
+          description: Additional Details 2
+        additional_details_3:
+          type: string
+          description: Additional Details 3
+        enable_io_tool_module:
+          type: boolean
+          description: Enable IOTool Module
+        enable_lead_management_module:
+          type: boolean
+          description: Enable Lead Management Module
+        override_dashboard_pages_from_reporting_profile:
+          type: boolean
+          description: Override dashboard pages from reporting profile
+        default_home_page:
+          type: string
+          description: Default home page
+        io_tool_notification_frequency:
+          type: string
+          enum: [never,real_time,daily,weekly,monthly]
+          description: IOTool notification frequency
+        country:
+          type: string
+          description: Country
+        timezone:
+          type: string 
+          description: Refer to <a href="#tag/USERS/paths/~1users~1values~1set/get">User Timezones</a> to obtain all available user timezones
+        status:
+          type: string
+          enum: [active,inactive]
+          description: Status
+        show_services_overview: 
+          type: string
+          default: default
+          description: Show services overview
+          enum: [default,yes,no]
+        show_categories_overview:
+          type: string
+          default: default
+          description: Show categories overview
+          enum: [default,yes,no]
+        role_id:
+          type: string
+          description: Role Id - Please refer to <a href="#tag/ROLES">Roles</a> to obtain all possible role types and Ids
+          
+          
+            **Note&#58;** This field is <font color="red">**required**</font> when *user_type* = `agent`
+        io_tool_role_id:
+          type: string
+          description: Io tool role Id - Please refer to <a href="#tag/ROLES">Roles</a> to obtain all possible role types and Ids
+        client_group_id:
+          type: string
+          description: Client Group Id - Please refer to <a href="#tag/CLIENT-GROUPS">Client Groups</a> to obtain all existing Client Group Ids
+          
+            
+            **Note&#58;** This field is <font color="red">**required**</font> when *user_type* = `agent`
+        reporting_profile_id:
+          type: string
+          default: "1"
+          description: Data Profile Id - Please refer to <a href="#tag/DATA-PROFILES">Data Profiles</a> to obtain all of the exisiting data profile id 
+            
+# --------------- Create a NEW User Model  ------------------            
+    createUser:
+      type: object
+      required: 
+        - first_name
+        - last_name
+        - user_type
+        - email
+        - password
+        - status
+        - reporting_profile_id
+      properties:
+        client_id: 
+          type: string
+          description: Client Id
+          
+          
+            **Note&#58;** This field is <font color="red">**required**</font> when *user_type* = `client`
+        user_type:
+          type: string
+          enum: [client,agent,superadmin,cluster_admin]
+          description: User type - Please refer to <a href="#tag/USERS/paths/~1users~1values~1set/get">User Types</a> to obtain all available user types
+        company_name: 
+          type: string
+          description: Company Name
+        first_name:
+          type: string
+          description: First Name
+        last_name:
+          type: string
+          description: Last Name
+        address_1:
+          type: string
+          description: Address 1
+        address_2:
+          type: string
+          description: Address 2
+        city:
+          type: string
+          description: City
+        state:
+          type: string
+          description: State
+        zip:
+          type: string
+          description: Zip/Postal Code
+        phone:
+          type: string
+          description: Phone number
+        email:
+          type: string
+          description: Email address
+          
+          
+            **Note&#58;** The email address must be a unique entry
+        password:
+          type: string
+          description: Password
+        cluster_id:
+          type: string
+          description: Business Unit Id - Please refer to <a href="#tag/BUSINESS-UNITS">Business Units</a> to obtain all of the exisiting Business Unit Ids
+          
+          
+            **Note&#58;** This field is <font color="red">**required**</font> when *user_type* = `cluster_admin`
+        external_user_id:
+          type: string
+          description: External User Id
+        additional_details_1:
+          type: string
+          description: Additional Details 1
+        additional_details_2:
+          type: string
+          description: Additional Details 2
+        additional_details_3:
+          type: string
+          description: Additional Details 3
+        enable_io_tool_module:
+          type: boolean
+          description: Enable IOTool Module
+        enable_lead_management_module:
+          type: boolean
+          description: Enable Lead Management Module
+        override_dashboard_pages_from_reporting_profile:
+          type: boolean
+          description: Override dashboard pages from reporting profile
+        default_home_page:
+          type: string
+          description: Default home page
+        io_tool_notification_frequency:
+          type: string
+          enum: [never,real_time,daily,weekly,monthly]
+          description: IOTool notification frequency
+        country:
+          type: string
+          description: Country
+        timezone:
+          type: string 
+          description: Refer to <a href="#tag/USERS/paths/~1users~1values~1set/get">User Timezones</a> to obtain all available user timezones
+        status:
+          type: string
+          enum: [active,inactive]
+          description: Status
+        show_services_overview: 
+          type: string
+          default: default
+          description: Show services overview
+          enum: [default,yes,no]
+        show_categories_overview:
+          type: string
+          default: default
+          description: Show categories overview
+          enum: [default,yes,no]
+        role_id:
+          type: string
+          description: Role Id - Please refer to <a href="#tag/ROLES">Roles</a> to obtain all possible role types and Ids
+          
+          
+            **Note&#58;** This field is <font color="red">**required**</font> when *user_type* = `agent`
+        io_tool_role_id:
+          type: string
+          description: Io tool role Id - Please refer to <a href="#tag/ROLES">Roles</a> to obtain all possible role types and Ids
+        client_group_id:
+          type: string
+          description: Client Group Id - Please refer to <a href="#tag/CLIENT-GROUPS">Client Groups</a> to obtain all existing Client Group Ids
+          
+            
+            **Note&#58;** This field is <font color="red">**required**</font> when *user_type* = `agent`
+        reporting_profile_id:
+          type: string
+          default: "1"
+          description: Data Profile Id - Please refer to <a href="#tag/DATA-PROFILES">Data Profiles</a> to obtain all of the exisiting data profile id 
+# --------------- User Model (GET) -----------------    
+    user:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User Id
+        client_id: 
+          type: string
+          description: Client Id
+        user_type:
+          type: string
+          enum: [client,agent,superadmin,cluster_admin]
+          description: User type - Please refer to <a href="#tag/USERS/paths/~1users~1values~1set/get">User Types</a> to obtain all available user types
+        company_name: 
+          type: string
+          description: Company Name
+        first_name:
+          type: string
+          description: First Name
+        last_name:
+          type: string
+          description: Last Name
+        address_1:
+          type: string
+          description: Address 1
+        address_2:
+          type: string
+          description: Address 2
+        city:
+          type: string
+          description: City
+        state:
+          type: string
+          description: State
+        zip:
+          type: string
+          description: Zip/Postal Code
+        phone:
+          type: string
+          description: Phone number
+        email:
+          type: string
+          description: Email address
+        cluster_id:
+          type: string
+          description: Business Unit Id - Please refer to <a href="#tag/BUSINESS-UNITS">Business Units</a> to obtain all of the exisiting Business Unit Ids
+        external_user_id:
+          type: string
+          description: External User Id
+        additional_details_1:
+          type: string
+          description: Additional Details 1
+        additional_details_2:
+          type: string
+          description: Additional Details 2
+        additional_details_3:
+          type: string
+          description: Additional Details 3
+        enable_io_tool_module:
+          type: boolean
+          description: Enable IOTool Module
+        enable_lead_management_module:
+          type: boolean
+          description: Enable Lead Management Module
+        has_light_logo:
+          type: boolean
+          description: Has light logo
+        has_dark_logo:
+          type: boolean
+          description: Has dark logo
+        override_dashboard_pages_from_reporting_profile:
+          type: boolean
+          description: Override dashboard pages from reporting profile
+        default_home_page:
+          type: string
+          description: Default home page
+        io_tool_notification_frequency:
+          type: string
+          enum: [never,real_time]
+          description: IOTool notification frequency
+        country:
+          type: string
+          description: Country
+        timezone:
+          type: string
+          description: Timezone - Please refer to <a href="#tag/USERS/paths/~1users~1values~1set/get">User Timezones</a> to obtain all available user timezones
+        status:
+          type: string
+          enum: [active,inactive]
+          description: Status
+        hipaa_acknowledgement_timestamp:
+          type: string
+          description: Hipaa ackowledgement timestamp
+        creation_time:
+          type: integer
+          description: Creation time
+        show_services_overview: 
+          type: string
+          default: default
+          enum: [default,yes,no]
+          description: Show services overview
+        show_categories_overview:
+          type: string
+          default: default
+          enum: [default,yes,no]
+          description: Show categories overview
+        role_id:
+          type: string
+          description: Role Id - Please refer to <a href="#tag/ROLES">Roles</a> to obtain all possible role types and ids
+        io_tool_role_id:
+          type: string
+          description: Io tool role Id - Please refer to <a href="#tag/ROLES">Roles</a> to obtain all possible role types and ids
+        client_group_id:
+          type: string
+          description: Client Group Id - Please refer to <a href="#tag/CLIENT-GROUPS">Client Groups</a> to obtain all existing Client Group Ids
+        reporting_profile_id:
+          type: string
+          default: "1"
+          description: Data Profile Id - Please refer to <a href="#tag/DATA-PROFILES">Data Profiles</a> to obtain all of the exisiting data profile Ids
+        user_type_display: 
+          type: string
+          enum: [Super Admin,Business Unit Admin,Agent,Client]
+          description: User type display - Please refer to <a href="#tag/USERS/paths/~1users~1values~1set/get">User Types</a> to obtain all available User types values
+        default_home_page_display:
+          type: string
+          description: Default Home Page Display
+          
+          
+            **Note&#58;** This field is returned only if *default_home_page* is set
+        io_tool_notification_frequency_display:
+          type: string
+          enum: [Never,Real-time]
+          description: IOTool notification frequency display
+          
+          
+            **Note&#58;** This field is returned only if *io_tool_notification_frequency* is set
+        country_display:
+          type: string
+          description: Country display
+        timezone_display: 
+          type: string
+          description: Timezone display - Please refer to <a href="#tag/USERS/paths/~1users~1values~1set/get">User Timezones</a> to obtain all available user timezones
+        status_display:
+          type: string
+          enum: [active,inactive]
+          description: Status display
+        formatted_creation_time:
+          type: string
+          description: Formatted creation time
+          
+# --------------- Timezone -----------------          
+    timezone:
+      type: object
+      properties:
+        value:
+          type: string
+          description: Value
+        label:
+          type: string
+          description: Label
+          
+# --------------- Usertype -----------------           
+    userType:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Key
+        value:
+          type: string
+          description: Value
+          
+    timezones:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/timezone'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status:
+          type: integer
+          description: Status
+      example:
+        data:
+          - value: Australia/Darwin
+            label: AUS Central Standard Time (Australia/Darwin)
+          - value: Australia/Sydney
+            label: AUS Eastern Standard Time (Australia/Sydney)
+          - value: Asia/Kabul
+            label: Afghanistan Standard Time (Asia/Kabul)
+          - value: America/Anchorage
+            label: Alaskan Standard Time (America/Anchorage)
+          - value: Asia/Riyadh
+            label: Arab Standard Time (Asia/Riyadh)
+          - value: Asia/Dubai
+            label: Arabian Standard Time (Asia/Dubai)
+          - value: Asia/Baghdad
+            label: Arabic Standard Time (Asia/Baghdad)
+          - value: America/Buenos_Aires
+            label: Argentina Standard Time (America/Buenos_Aires)
+          - value: Asia/Yerevan
+            label: Armenian Standard Time (Asia/Yerevan)
+          - value: America/Halifax
+            label: Atlantic Standard Time (America/Halifax)
+          - value: Asia/Baku
+            label: Azerbaijan Standard Time (Asia/Baku)
+          - value: Atlantic/Azores
+            label: Azores Standard Time (Atlantic/Azores)
+          - value: America/Regina
+            label: Canada Central Standard Time (America/Regina)
+          - value: Atlantic/Cape_Verde
+            label: Cape Verde Standard Time (Atlantic/Cape_Verde)
+          - value: Australia/Adelaide
+            label: Cen. Australia Standard Time (Australia/Adelaide)
+          - value: America/Guatemala
+            label: Central America Standard Time (America/Guatemala)
+          - value: Asia/Dhaka
+            label: Central Asia Standard Time (Asia/Dhaka)
+          - value: America/Manaus
+            label: Central Brazilian Standard Time (America/Manaus)
+          - value: Europe/Budapest
+            label: Central Europe Standard Time (Europe/Budapest)
+          - value: Europe/Warsaw
+            label: Central European Standard Time (Europe/Warsaw)
+          - value: Pacific/Guadalcanal
+            label: Central Pacific Standard Time (Pacific/Guadalcanal)
+          - value: America/Chicago
+            label: Central Standard Time (America/Chicago)
+          - value: America/Mexico_City
+            label: Central Standard Time (Mexico) (America/Mexico_City)
+          - value: Asia/Shanghai
+            label: China Standard Time (Asia/Shanghai)
+          - value: Etc/GMT+12
+            label: Dateline Standard Time (Etc/GMT+12)
+          - value: Africa/Nairobi
+            label: E. Africa Standard Time (Africa/Nairobi)
+          - value: Australia/Brisbane
+            label: E. Australia Standard Time (Australia/Brisbane)
+          - value: Europe/Minsk
+            label: E. Europe Standard Time (Europe/Minsk)
+          - value: America/Sao_Paulo
+            label: E. South America Standard Time (America/Sao_Paulo)
+          - value: America/New_York
+            label: Eastern Standard Time (America/New_York)
+          - value: Africa/Cairo
+            label: Egypt Standard Time (Africa/Cairo)
+          - value: Asia/Yekaterinburg
+            label: Ekaterinburg Standard Time (Asia/Yekaterinburg)
+          - value: Europe/Kiev
+            label: FLE Standard Time (Europe/Kiev)
+          - value: Pacific/Fiji
+            label: Fiji Standard Time (Pacific/Fiji)
+          - value: Europe/London
+            label: GMT Standard Time (Europe/London)
+          - value: Europe/Istanbul
+            label: GTB Standard Time (Europe/Istanbul)
+          - value: Etc/GMT-3
+            label: Georgian Standard Time (Etc/GMT-3)
+          - value: America/Godthab
+            label: Greenland Standard Time (America/Godthab)
+          - value: Atlantic/Reykjavik
+            label: Greenwich Standard Time (Atlantic/Reykjavik)
+          - value: Pacific/Honolulu
+            label: Hawaiian Standard Time (Pacific/Honolulu)
+          - value: Asia/Calcutta
+            label: India Standard Time (Asia/Calcutta)
+          - value: Asia/Tehran
+            label: Iran Standard Time (Asia/Tehran)
+          - value: Asia/Jerusalem
+            label: Israel Standard Time (Asia/Jerusalem)
+          - value: Asia/Amman
+            label: Jordan Standard Time (Asia/Amman)
+          - value: Asia/Seoul
+            label: Korea Standard Time (Asia/Seoul)
+          - value: Indian/Mauritius
+            label: Mauritius Standard Time (Indian/Mauritius)
+          - value: America/Chihuahua
+            label: Mexico Standard Time 2 (America/Chihuahua)
+          - value: Atlantic/South_Georgia
+            label: Mid-Atlantic Standard Time (Atlantic/South_Georgia)
+          - value: Asia/Beirut
+            label: Middle East Standard Time (Asia/Beirut)
+          - value: America/Montevideo
+            label: Montevideo Standard Time (America/Montevideo)
+          - value: Africa/Casablanca
+            label: Morocco Standard Time (Africa/Casablanca)
+          - value: America/Denver
+            label: Mountain Standard Time (America/Denver)
+          - value: Asia/Rangoon
+            label: Myanmar Standard Time (Asia/Rangoon)
+          - value: Asia/Novosibirsk
+            label: N. Central Asia Standard Time (Asia/Novosibirsk)
+          - value: Africa/Windhoek
+            label: Namibia Standard Time (Africa/Windhoek)
+          - value: Asia/Katmandu
+            label: Nepal Standard Time (Asia/Katmandu)
+          - value: Pacific/Auckland
+            label: New Zealand Standard Time (Pacific/Auckland)
+          - value: America/St_Johns
+            label: Newfoundland Standard Time (America/St_Johns)
+          - value: Asia/Irkutsk
+            label: North Asia East Standard Time (Asia/Irkutsk)
+          - value: Asia/Krasnoyarsk
+            label: North Asia Standard Time (Asia/Krasnoyarsk)
+          - value: America/Santiago
+            label: Pacific SA Standard Time (America/Santiago)
+          - value: America/Los_Angeles
+            label: Pacific Standard Time (America/Los_Angeles)
+          - value: America/Tijuana
+            label: Pacific Standard Time (Mexico) (America/Tijuana)
+          - value: Asia/Karachi
+            label: Pakistan Standard Time (Asia/Karachi)
+          - value: Europe/Paris
+            label: Romance Standard Time (Europe/Paris)
+          - value: Europe/Moscow
+            label: Russian Standard Time (Europe/Moscow)
+          - value: Etc/GMT+3
+            label: SA Eastern Standard Time (Etc/GMT+3)
+          - value: America/Bogota
+            label: SA Pacific Standard Time (America/Bogota)
+          - value: America/La_Paz
+            label: SA Western Standard Time (America/La_Paz)
+          - value: Asia/Bangkok
+            label: SE Asia Standard Time (Asia/Bangkok)
+          - value: Pacific/Apia
+            label: Samoa Standard Time (Pacific/Apia)
+          - value: Asia/Singapore
+            label: Singapore Standard Time (Asia/Singapore)
+          - value: Africa/Johannesburg
+            label: South Africa Standard Time (Africa/Johannesburg)
+          - value: Asia/Colombo
+            label: Sri Lanka Standard Time (Asia/Colombo)
+          - value: Asia/Taipei
+            label: Taipei Standard Time (Asia/Taipei)
+          - value: Australia/Hobart
+            label: Tasmania Standard Time (Australia/Hobart)
+          - value: Asia/Tokyo
+            label: Tokyo Standard Time (Asia/Tokyo)
+          - value: Pacific/Tongatapu
+            label: Tonga Standard Time (Pacific/Tongatapu)
+          - value: Etc/GMT+5
+            label: US Eastern Standard Time (Etc/GMT+5)
+          - value: America/Phoenix
+            label: US Mountain Standard Time (America/Phoenix)
+          - value: America/Caracas
+            label: Venezuela Standard Time (America/Caracas)
+          - value: Asia/Vladivostok
+            label: Vladivostok Standard Time (Asia/Vladivostok)
+          - value: Australia/Perth
+            label: W. Australia Standard Time (Australia/Perth)
+          - value: Africa/Lagos
+            label: W. Central Africa Standard Time (Africa/Lagos)
+          - value: Europe/Berlin
+            label: W. Europe Standard Time (Europe/Berlin)
+          - value: Asia/Tashkent
+            label: West Asia Standard Time (Asia/Tashkent)
+          - value: Pacific/Port_Moresby
+            label: West Pacific Standard Time (Pacific/Port_Moresby)
+          - value: Asia/Yakutsk
+            label: Yakutsk Standard Time (Asia/Yakutsk)                      
+        error: false
+        warnings: []
+        status: 200  
+          
+    userTypes:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/userType'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status:
+          type: integer
+          description: Status     
+      example:
+        data:
+          - key: "superadmin"
+            value: "Super Admin"
+          - key: "cluster_admin"
+            value: "Business Unit Admin"
+          - key: "agent"
+            value: "Agent"
+          - key: "client"
+            value: "Client"
+        error: false
+        warnings: []
+        status: 200               
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+# --------------- Error Msg/Responses Model-----------------  
+    error_400:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: Error
+        data:
+          type: array
+          description: Data
+          items:
+            type: string
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status:
+          type: integer
+          description: Status
+      example:
+        error: true
+        data: 
+          - item cannot be selected
+        warnings: []
+        status: 400
+    error_401:
+      type: object
+      properties:
+        fault:
+          type: object
+          properties:
+            faultstring:
+              type: string
+              description: Faultstring
+            detail:
+              type: object
+              properties:
+                errorcode:
+                  type: string
+                  description: Errorcode
+      example: 
+        fault:
+          faultstring: 'Invalid Access Token'
+          detail:
+            errorcode: 'keymanagement.service.invalid_access_token'
+    
+    error_403:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: Error
+        data:
+          type: array
+          description: Data
+          items:
+            type: string
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status:
+          type: integer
+          description: Status
+      example:
+        error: true
+        data: 
+          - "You are not allowed to use this feature"
+        warnings: []
+        status: 403
+
+    error_404:
+      type: object
+      properties:
+        error:
+          type: boolean
+          description: Error
+        data: 
+          type: array
+          description: Data
+          items:
+            type: string
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status:
+          type: integer
+          description: Status
+      example:
+        error: 'true'
+        data: ['API Route not found']
+        warnings: []
+        status: 404
+          
+    response_200_clusters:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/cluster'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+
+    response_200_categories:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/category'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+
+    response_200_clients:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/client'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer 
+          description: Status
+          
+    response_200_successful_post_delete:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Id
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer 
+          description: Status
+      example:
+        data:
+          id: "35"
+        error: false
+        warnings: []
+        status: 200
+          
+
+    response_200_clientcategories:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/clientCategory'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+          
+    response_200_clientgroups:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/clientGroup'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+          
+    response_200_dataprofiles:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/dataProfile'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+          
+    response_200_datatypes:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataType'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+          
+    response_200_daterange:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/dateRange'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer 
+          description: Status
+          
+    response_200_languages:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+           $ref: '#/components/schemas/language'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+          
+    response_200_leads:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/lead'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+          
+    response_200_roles:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/role'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+          
+    response_200_services:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/service'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+          
+    response_200_servicesdataview:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/serviceDataView'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+          
+    response_200_users:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/user'
+        error:
+          type: boolean
+          description: Error
+        warnings:
+          type: array
+          description: Warnings
+          items:
+            type: string
+        status: 
+          type: integer
+          description: Status
+        
+        
+
+  securitySchemes:
+    oAuth2ClientCredentials:
+      type: oauth2
+      description: |
+        
+        As a first step, you can request your OAuth client credentials by sending an email to api-developer@tapclicks.com.<br>
+        You will need to provide a valid and active TapClicks account *email address* and the complete domain name that you have access to (*https://<span></span>your_instance.tapclicks.com*).<br>
+        This request will be answered by assigning to you a unique Client Id (`CLIENT_ID`) and a unique Client Secret (`CLIENT_SECRET`). Make sure to store your Client Secret securely.
+
+        This set of values will allow you to obtain an Access Token (`ACCESS_TOKEN`) that will grant you access to the API.
+        
+        **To obtain the Access Token:**
+
+        ```
+        curl -X POST \
+        -d "client_id=CLIENT_ID&client_secret=CLIENT_SECRET&grant_type=client_credentials" \
+        "https://api.tapclicks.com/oauth/accesstoken"
+        
+        ```
+
+        **Base URL and Authorization Header:**
+        The base URL for all API calls is https://api.tapclicks.com/v2
+        
+        The Access Token needs to be included in every single API call in the Authorization Header as a type Bearer.
+        
+        ```
+        curl -X GET https://api.tapclicks.com/v2/ \
+        -H "Authorization: Bearer ACCESS_TOKEN"
+        
+        ```
+        
+        **Get New Access Token:**
+        The Access Token has a limited lifetime. You can request another Access Token using your client_id and client_secret with a refresh_accesstoken call. 
+        
+        ```
+        curl -X POST -d \
+        "client_id=CLIENT_ID&client_secret=CLIENT_SECRET&grant_type=client_credentials" \
+        "https://api.tapclicks.com/oauth/refresh_accesstoken"
+        
+        ```
+
+        The Refresh Token also has a limited lifetime. The lifetime (*expires_in*) is expressed in seconds
+
+
+        **Possible responses:**
+
+        ```
+          Good Response: Status 200 OK
+
+          {
+            "access_token": string,
+            "expires_in": integer
+          }
+          
+          
+          Bad Requests: Status 401 BAD REQUEST
+          {
+            "access_token": null,
+            "expires_in": null
+          }          
+
+          Bad Requests: Status 401 BAD REQUEST
+          {
+            "fault": {
+              "faultstring": "Invalid client identifier {0}",
+              "detail": {
+                "errorcode": "oauth.v2.InvalidClientIdentifier"
+              }
+            }
+          }
+
+          Bad Requests: Status 401 BAD REQUEST
+          {
+            "fault": {
+              "faultstring": "invalid_request",
+              "detail": {
+                "errorcode": "invalid_request"
+              }
+            }
+          }
+          
+          Bad Request: Status 404 BAD REQUEST
+          {
+            "fault": {
+              "faultstring": "Unable to identify proxy for host: https_vhost and url: /clients",
+              "detail": {
+                "errorcode": "messaging.adaptors.http.flow.ApplicationNotFound"
+              }
+            }
+          }
+          
+        ```
+
+
+      flows: 
+        clientCredentials: 
+          tokenUrl: https://api.tapclicks.com/oauth/accesstoken
+          refreshUrl: https://api.tapclicks.com/oauth/refresh_accesstoken
+          scopes: {}
+    bearerAuth:            
+      type: http
+      scheme: bearer
+      bearerFormat: JWT           
+    
+security:
+  - bearerAuth: []
